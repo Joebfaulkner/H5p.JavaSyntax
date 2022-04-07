@@ -17,6 +17,7 @@ class Parser
      */
     parse(tokens) 
     {
+        console.log("test");
         const seperators = [' ', 'Φ', '(', ')', '{', '}', '[', ']', '.', ';'];
         const opperators = ['=' , '+' , '-' , '/' , '%' , '+=' , '-=' , '/=' , '*=' , '%=' , '==' , '<' , '>' , '<=' , '>=' , '++' , '--'];
         const keywords = ['int' , 'double' , 'float' , 'long' , 'String' , 'char' , 'byte' , 'for' , 'while' , 'if' , 'else' , 'class' , 'final' , 'protected' , 'public' , 'private' , 'static' , 'void' , 'return' , 'switch' , 'case' , 'this' , 'boolean' , 'main' , 'args', 'import', 'extends'];
@@ -80,12 +81,53 @@ class Parser
                     }
                 }
             }
-            else if((tokenHolder.tokenType === 'identifier' && !(variablesDeclared.indexOf(tokens[index].tokenType) !== -1)))
+            else if((tokenHolder.tokenType === 'identifier' && !(variablesDeclared.indexOf(tokens[index].tokenType) !== -1))) //If the statement starts with a previously declared identifier
             {
-                //If the statement starts with a previously declared identifier
+                index++;
+                 if(tokens[index].tokenName === '=')
+                {
+                    index++;
+                    if(numberVariable.indexOf(tokenHolder.tokenName) != -1) // If there is a number type of variable being declared
+                    {
+                        if(!isNaN(tokens[index]))
+                        {
+
+                        }
+                        else
+                        {
+                            return index;
+                        }
+                    }
+                    else if(tokenHolder.tokenName = 'String')
+                    {
+                        if(tokens[index].tokenName.charAt(0) === '"' && tokens[index].tokenName.charAt(tokens[index].tokenName.length-1) === '"')
+                        {
+                                    
+                        }
+                        else
+                        {
+                            return index;
+                        }
+                    }
+                    else if(tokenHolder.tokenName === 'boolean')
+                    {
+                        if(tokens[index].tokenName === 'true')
+                        {
+
+                        }
+                        else if(tokens[index].tokenName === 'false')
+                        {
+
+                        }
+                        else
+                        {
+                            return index;
+                        }
+                    }
+                }
             }
             index++;
         }
-        return 1;
+        return -1;
     }
 }

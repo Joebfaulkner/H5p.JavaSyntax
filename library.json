@@ -2,7 +2,7 @@
   "title": "JavaSyntax",
   "description": "Checks if there is a palindrome or not.",
   "majorVersion": 1,
-  "minorVersion": 0,
+  "minorVersion": 1,
   "patchVersion": 0,
   "runnable": 1,
   "author": "Joseph Faulkner",
