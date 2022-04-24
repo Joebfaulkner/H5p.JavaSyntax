@@ -10,7 +10,7 @@
   "machineName": "H5P.JavaSyntax",
   "coreApi": {
     "majorVersion": 1,
-    "minorVersion": 0
+    "minorVersion": 1
   },
   "preloadedJs": [
     {
@@ -21,6 +21,9 @@
     },
     {
       "path": "token.js"
+    },
+    {
+      "path": "parser.js"
     }
   ],
   "preloadedCss": [
