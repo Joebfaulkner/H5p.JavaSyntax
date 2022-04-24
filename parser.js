@@ -3,19 +3,113 @@ class Parser
     /**
      * @constructor
      * @param {String} parserType
+     * @param {Array} tokens
+     * @param {Array} classes
      * 
      */
-    constructor(parserType)
+    constructor(parserType, tokens)
     {
         this.parserType = parserType;
+        this.tokens = tokens;
+        this.classes = classes;
+        const identifiersDeclared = []; // This is an array to store all declared identifiers.
+        let index = 0;
     }
+
+
+    Parser(tokens)
+    {
+        
+        while(this.index < this.tokens.length)
+        {
+            if( this.tokens[index].tokenType === "keyword" || this.identifiersDeclared.indexOf(this.tokens[index]) !== -1)
+            {
+                this.StatementFinder();
+            } 
+            index ++;
+        }
+    }
+
+    /**
+     * 
+     * @returns {int} startIndex
+     * @returns {int} endIndex 
+     * @return {String} statementType
+     */
+    StatementFinder()
+    {
+        const modifiers = ['final', 'static', 'public', 'private', 'protected'];
+        const variableTypes = ['int' , 'double' , 'float' , 'long' , 'String' , 'char' , 'byte', 'boolean'];
+        if(modifiers.indexOf(this.tokens[this.index]) !== -1) 
+        {
+            // We know we are initializing something
+        }
+        else if(variableTypes.indexOf(this.okens[this.index]) !== -1)
+        {
+            // We know we are initializing a variable
+        }
+        else if(this.tokens[this.index].tokenType === "identifier")
+        {
+            // We know we are doing something with an already declared identifier
+        }
+        else if(this.tokens[this.index].tokenName === "class")
+        {
+            // We know this is a class header
+        }
+        else if(this.tokens[this.index].tokenName === "import")
+        {
+            // We know this is an import statment
+        }
+        else if(this.tokens[this.index].tokenName === "for")
+        {
+            // We know this is a for loop
+        }
+        else if(this.tokens[this.index].tokenName === "if")
+        {
+            // We know this is an if statemenet
+        }
+        else if(this.tokens[this.index].tokenName === "return")
+        {
+            // We know this is a return statement
+        }
+        else if(this.tokens[this.index].tokenName === "swtitch")
+        {
+            // We know this is a switch statement
+        }
+        else if(this.tokens[this.index].tokenName === "case")
+        {
+            // We know this is a case statement
+        }
+        else if(this.tokens[this.index].tokenName === "break")
+        {
+            // WE know this is a break statement
+        }
+        else if(this.tokens[this.index].tokenName === "while")
+        {
+            // We know this is a while loop
+        }
+        else if(this.tokens[this.index].tokenName === "do")
+        {
+            // We know this is a do statement at the beggining of a do while loop
+        }
+        else if(this.tokens[this.index].tokenName === "try")
+        {
+            // We know that this is the begining of a try block
+        }
+    }
+
+
+
+
+
+
 
     /**
      * 
      * @param {Array} tokens 
      * @returns {int} indexOfError
      */
-    static parse(tokens) 
+    VariableParser(tokens) 
     {
         const seperators = [' ', 'Φ', '(', ')', '{', '}', '[', ']', '.', ';'];
         const opperators = ['=' , '+' , '-' , '/' , '%' , '+=' , '-=' , '/=' , '*=' , '%=' , '==' , '<' , '>' , '<=' , '>=' , '++' , '--'];
