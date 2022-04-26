@@ -42,6 +42,100 @@ class Parser
         const variableTypes = ['int' , 'double' , 'float' , 'long' , 'String' , 'char' , 'byte', 'boolean'];
         if(modifiers.indexOf(this.tokens[this.index]) !== -1) 
         {
+            if(this.tokens[this.index].tokenName === 'public' || this.tokens[this.index].tokenName === 'private' || this.tokens[this.index].tokenName === 'protected')
+            {
+                this.index++;
+                if(this.tokens[this.index] === 'final')
+                {
+                    this.index++;
+                    if(this.tokens[this.index] === 'static')
+                    {
+                        this.index++;
+                    }
+                    else
+                    {
+                        this.index++;
+                    }
+                }
+                else if(this.tokens[this.index] === 'static')
+                {
+                    this.index++;
+                    if(this.tokens[this.index] === 'final')
+                    {
+                        this.index++;
+                    }
+                    else
+                    {
+                        this.index++;
+                    }
+                }
+                else
+                {
+                    this.index++;
+                }
+            }
+            else if(this.tokens[this.index] === 'final')
+            {
+                this.index++;
+                if(this.tokens[this.index].tokenName === 'public' || this.tokens[this.index].tokenName === 'private' || this.tokens[this.index].tokenName === 'protected')
+                {
+                    if(this.tokens[this.index] === 'static')
+                    {
+                        this.index++;
+                    }
+                    else
+                    {
+                        this.index++;
+                    }
+                }
+                else if(this.tokens[this.index] === 'static')
+                {
+                    this.index++;
+                    if(this.tokens[this.index].tokenName === 'public' || this.tokens[this.index].tokenName === 'private' || this.tokens[this.index].tokenName === 'protected')
+                    {
+                        this.index++;
+                    }
+                    else
+                    {
+                        this.index++;
+                    }
+                }
+                else
+                {
+                    this.index++;
+                }
+            }
+            else if(this.tokens[this.index] === 'static')
+            {
+                this.index++;
+                if(this.tokens[this.index] === 'final')
+                {
+                    this.index++;
+                    if(this.tokens[this.index].tokenName === 'public' || this.tokens[this.index].tokenName === 'private' || this.tokens[this.index].tokenName === 'protected')
+                    {
+                        this.index++;
+                    }
+                    else
+                    {
+                        this.index++;
+                    }
+                }
+                else if(this.tokens[this.index].tokenName === 'public' || this.tokens[this.index].tokenName === 'private' || this.tokens[this.index].tokenName === 'protected')
+                {
+                    if(this.tokens[this.index] === 'final')
+                    {
+                        this.index++;
+                    }
+                    else
+                    {
+                        this.index++;
+                    }
+                }
+                else
+                {
+                    this.index++;
+                }
+            }
             // We know we are initializing something
         }
         else if(variableTypes.indexOf(this.okens[this.index]) !== -1)
@@ -97,6 +191,7 @@ class Parser
             // We know that this is the begining of a try block
         }
     }
+    
 
 
 
