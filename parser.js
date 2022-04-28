@@ -40,7 +40,7 @@ class Parser
     StatementFinder()
     {
         const modifiers = ['final', 'static', 'public', 'private', 'protected'];
-        const variableTypes = ['int' , 'double' , 'float' , 'long' , 'String' , 'char' , 'byte', 'boolean'];
+        const variableTypes = ['int' , 'double' , 'float' , 'long' , 'String' , 'char' , 'byte', 'boolean', 'short'];
         if(modifiers.indexOf(this.tokens[this.index].tokenName) !== -1) 
         {
             if(this.tokens[this.index].tokenName === 'public' || this.tokens[this.index].tokenName === 'private' || this.tokens[this.index].tokenName === 'protected')
@@ -280,10 +280,65 @@ class Parser
                         // Can be variable declaration
                         // Can be array declaration
                         this.index++;
+                        if(knownObjects.indexOf(this.tokens[this.index].tokenName))
+                        {   // final public static Object
+                            // Object declaration
+                        }
+                        else if(variableTypes.indexOf(this.tokens[this.index]) !== -1)
+                        {   //final public static int
+                            // Can be variable declaration
+                            // Can be array declaration
+                            this.index++;
+                            if(this.tokens[this.index] === '[')
+                            { // final public static int [
+                                // Array decalaration
+                            }
+                            else if(this.tokens[this.index] === '=')
+                            { // final public static int =
+                                // Array declaration
+                            }
+                            else
+                            { // final public static int $
+                                // error
+                            }
+                        }
+                        else
+                        { // final public static $
+                            // error
+                        }
                     }
                     else
                     { // final public
+                        // Can be object declaration
+                        // Can be variable declaration
+                        // Can be array declaration
                         this.index++;
+                        if(knownObjects.indexOf(this.tokens[this.index].tokenName))
+                        {   // final public Object
+                            // Object declaration
+                        }
+                        else if(variableTypes.indexOf(this.tokens[this.index]) !== -1)
+                        {   //final public int
+                            // Can be variable declaration
+                            // Can be array declaration
+                            this.index++;
+                            if(this.tokens[this.index] === '[')
+                            { // final public int [
+                                // Array decalaration
+                            }
+                            else if(this.tokens[this.index] === '=')
+                            { // final public int =
+                                // Array declaration
+                            }
+                            else
+                            { // final public int $
+                                // error
+                            }
+                        }
+                        else
+                        { // final public $
+                            // error
+                        }
                     }
                 }
                 else if(this.tokens[this.index].tokenName === 'static')
@@ -291,10 +346,39 @@ class Parser
                     this.index++;
                     if(this.tokens[this.index].tokenName === 'public' || this.tokens[this.index].tokenName === 'private' || this.tokens[this.index].tokenName === 'protected')
                     { // final static public
+                        // Object declaration
+                        // variable declaration
+                        // array declaration
                         this.index++;
+                        if(knownObjects.indexOf(this.tokens[this.index].tokenName))
+                        {   // final static public Object
+                            // Object declaration
+                        }
+                        else if(variableTypes.indexOf(this.tokens[this.index]) !== -1)
+                        {   //final static public int
+                            // Can be variable declaration
+                            // Can be array declaration
+                            this.index++;
+                            if(this.tokens[this.index] === '[')
+                            { // final static public int [
+                                // Array decalaration
+                            }
+                            else if(this.tokens[this.index] === '=')
+                            { // final static public int =
+                                // varaible declaration
+                            }
+                            else
+                            { // final static public int $
+                                // error
+                            }
+                        }
+                        else
+                        { // final static public $
+                            // error
+                        }
                     }
                     else
-                    { // final static
+                    { // final static $
                         this.index++;
                     }
                 }
