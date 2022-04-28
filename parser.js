@@ -90,17 +90,21 @@ class Parser
                         this.index++;
                         if(knownObjects.indexOf(this.tokens[this.index].tokenName) !== -1)
                         { // public final Object
+                            this.index++;
                             // Object declaration
                         }
                         else if(variableTypes.indexOf(this.tokens[this.index].tokenName) !== -1)
                         { // public final int
+                            this.index++;
                             // Variable, or array
                             if(this.tokens[this.index].tokenName === '=')
                             { // public final int x =
+                                this.index++;
                                 // Variable declaration
                             }
                             else if(this.tokens[this.index].tokenName === '[')
                             { // public final int x[
+                                this.index++;
                                 // Array declaration
                             }
                             else
@@ -124,6 +128,7 @@ class Parser
                         this.index++;
                         if(knownObjects.indexOf(this.tokens[this.index].tokenName) !== -1)
                         { // public static final object
+                            this.index++;
                             // Object declaration
                         }
                         else if(variableTypes.indexOf(this.tokens[this.index].tokenName) !== -1)
@@ -136,14 +141,17 @@ class Parser
                                 this.index++;
                                 if(this.tokens[this.index].tokenName === '(')
                                 { // public static final int x(
+                                    this.index++;
                                     // Method header
                                 }
                                 else if(this.tokens[this.index].tokenName === '=')
                                 { // public static final int x =
+                                    this.index++;
                                     // Variable declaration
                                 }
                                 else if(this.tokens[this.index].tokenName === '[')
                                 { // public static final int x[
+                                    this.index++;
                                     // Array declaration
                                 }
                                 else
@@ -167,6 +175,7 @@ class Parser
                         this.index++;
                         if(this.tokens[this.index].tokenName === 'void')
                         { // public static void
+                            this.index++;
                             // This is a method header
                         }
                         else if(variableTypes.indexOf(this.tokens[this.index].tokenName) !== -1)
@@ -378,13 +387,71 @@ class Parser
                         }
                     }
                     else
-                    { // final static $
+                    { // final static
+                        // Object declaration
+                        // variable declaration
+                        // array declaration
                         this.index++;
+                        if(knownObjects.indexOf(this.tokens[this.index].tokenName))
+                        {   // final static Object
+                            // Object declaration
+                        }
+                        else if(variableTypes.indexOf(this.tokens[this.index]) !== -1)
+                        {   //final static int
+                            // Can be variable declaration
+                            // Can be array declaration
+                            this.index++;
+                            if(this.tokens[this.index] === '[')
+                            { // final static int [
+                                // Array decalaration
+                            }
+                            else if(this.tokens[this.index] === '=')
+                            { // final static int =
+                                // varaible declaration
+                            }
+                            else
+                            { // final static int $
+                                // error
+                            }
+                        }
+                        else
+                        { // final static $
+                            // error
+                        }
                     }
                 }
                 else
                 { // final
+                    // Object declaration
+                    // variable declaration
+                    // array declaration
                     this.index++;
+                    if(knownObjects.indexOf(this.tokens[this.index].tokenName))
+                    {   // final Object
+                        // Object declaration
+                    }
+                    else if(variableTypes.indexOf(this.tokens[this.index]) !== -1)
+                    {   //final int
+                        // Can be variable declaration
+                        // Can be array declaration
+                        this.index++;
+                        if(this.tokens[this.index] === '[')
+                        { // final int [
+                            // Array decalaration
+                        }
+                        else if(this.tokens[this.index] === '=')
+                        { // final int =
+                            // varaible declaration
+                        }
+                        else
+                        { // final int $
+                            // error
+                        }
+                    }
+                    else
+                    { // final $
+                        // error
+                    }
                 }
             }
             else if(this.tokens[this.index].tokenName === 'static')
@@ -395,40 +462,208 @@ class Parser
                     this.index++;
                     if(this.tokens[this.index].tokenName === 'public' || this.tokens[this.index].tokenName === 'private' || this.tokens[this.index].tokenName === 'protected')
                     { // static final public
+                        // Object declaration
+                        // variable declaration
+                        // array declaration
                         this.index++;
+                        if(knownObjects.indexOf(this.tokens[this.index].tokenName))
+                        {   // static final public Object
+                            // Object declaration
+                        }
+                        else if(variableTypes.indexOf(this.tokens[this.index]) !== -1)
+                        {   //static final public int
+                            // Can be variable declaration
+                            // Can be array declaration
+                            this.index++;
+                            if(this.tokens[this.index] === '[')
+                            { // static final public int [
+                                // Array decalaration
+                            }
+                            else if(this.tokens[this.index] === '=')
+                            { // static final public int =
+                                // varaible declaration
+                            }
+                            else
+                            { // static final public int $
+                                // error
+                            }
+                        }
+                        else
+                        { // static final public $
+                            // error
+                        }
                     }
                     else
                     { // static final
+                        // Object declaration
+                        // variable declaration
+                        // array declaration
                         this.index++;
+                        if(knownObjects.indexOf(this.tokens[this.index].tokenName))
+                        {   // static final Object
+                            // Object declaration
+                        }
+                        else if(variableTypes.indexOf(this.tokens[this.index]) !== -1)
+                        {   //static final int
+                            // Can be variable declaration
+                            // Can be array declaration
+                            this.index++;
+                            if(this.tokens[this.index] === '[')
+                            { // static final int [
+                                // Array decalaration
+                            }
+                            else if(this.tokens[this.index] === '=')
+                            { // static final int =
+                                // varaible declaration
+                            }
+                            else
+                            { // static final int $
+                                // error
+                            }
+                        }
+                        else
+                        { // static final $
+                            // error
+                        }
                     }
                 }
                 else if(this.tokens[this.index].tokenName === 'public' || this.tokens[this.index].tokenName === 'private' || this.tokens[this.index].tokenName === 'protected')
                 {
                     if(this.tokens[this.index].tokenName === 'final')
                     { // static public final
+                        // Object declaration
+                        // variable declaration
+                        // array declaration
                         this.index++;
+                        if(knownObjects.indexOf(this.tokens[this.index].tokenName))
+                        {   // static public final Object
+                            // Object declaration
+                        }
+                        else if(variableTypes.indexOf(this.tokens[this.index]) !== -1)
+                        {   //static public final int
+                            // Can be variable declaration
+                            // Can be array declaration
+                            this.index++;
+                            if(this.tokens[this.index] === '[')
+                            { // static public final int [
+                                // Array decalaration
+                            }
+                            else if(this.tokens[this.index] === '=')
+                            { // static public final int =
+                                // varaible declaration
+                            }
+                            else
+                            { // static public final int $
+                                // error
+                            }
+                        }
+                        else
+                        { // static public final $
+                            // error
+                        }
                     }
                     else
                     { // static public
                         // Can be method header
+                        // Can be an array declaratoin
+                        // Can be variable declaration
+                        // Can be object declaration
                         this.index++;
                         if(this.tokens[this.index].tokenName === 'void')
                         { // static public void
                             // This is a method header
+                        }
+                        else if(variableTypes.indexOf(this.tokens[this.index].tokenName) !== -1)
+                        { // static public int
+                            // Variable, method, or array
+                            this.index++;
+                            if(this.identifiersDeclared.indexOf(this.tokens[this.index].tokenName) === -1)
+                            { // static public int x    //if x is not declared previously
+                                this.identifiersDeclared.push(this.tokens[this.index].tokenName);
+                                this.index++;
+                                if(this.tokens[this.index].tokenName === '(')
+                                { // static public int x(
+                                    // Method header
+                                }
+                                else if(this.tokens[this.index].tokenName === '=')
+                                { // static public int x =
+                                    // Variable declaration
+                                }
+                                else if(this.tokens[this.index].tokenName === '[')
+                                { // static public int x[
+                                    // Array declaration
+                                }
+                                else
+                                {
+                                    // Error I think
+                                }
+                            }
+                            else
+                            {// static public int x     //if x is already declared previously
+                                //Error
+                            }
+
+                        }
+                        else if(knownObjects.indexOf(this.tokens[this.index].tokenName) !== -1)
+                        { // static public object
+                            // Object declaration
+                        }
+                        else
+                        {
+                            // An error of somekind I think
                         }
                     }
                 }
                 else
                 { // static
                     // Can be method header
-                    // Can be variable declaration
-                    // Can be array declaration
-                    // Can be object declaration
-                    this.index++;
-                    if(this.tokens[this.index].tokenName === 'void')
-                    { // static void
-                        // This is a method header
-                    }
+                        // Can be an array declaratoin
+                        // Can be variable declaration
+                        // Can be object declaration
+                        this.index++;
+                        if(this.tokens[this.index].tokenName === 'void')
+                        { // static void
+                            // This is a method header
+                        }
+                        else if(variableTypes.indexOf(this.tokens[this.index].tokenName) !== -1)
+                        { // static int
+                            // Variable, method, or array
+                            this.index++;
+                            if(this.identifiersDeclared.indexOf(this.tokens[this.index].tokenName) === -1)
+                            { // static int x    //if x is not declared previously
+                                this.identifiersDeclared.push(this.tokens[this.index].tokenName);
+                                this.index++;
+                                if(this.tokens[this.index].tokenName === '(')
+                                { // static int x(
+                                    // Method header
+                                }
+                                else if(this.tokens[this.index].tokenName === '=')
+                                { // static int x =
+                                    // Variable declaration
+                                }
+                                else if(this.tokens[this.index].tokenName === '[')
+                                { // static int x[
+                                    // Array declaration
+                                }
+                                else
+                                {
+                                    // Error I think
+                                }
+                            }
+                            else
+                            {// static int x     //if x is already declared previously
+                                //Error
+                            }
+
+                        }
+                        else if(knownObjects.indexOf(this.tokens[this.index].tokenName) !== -1)
+                        { // static object
+                            // Object declaration
+                        }
+                        else
+                        {
+                            // An error of somekind I think
+                        }
                 }
             }
             // We know we are initializing something
@@ -436,6 +671,32 @@ class Parser
         else if(variableTypes.indexOf(this.tokens[this.index].tokenName) !== -1)
         {
             // We know we are initializing a variable, array, or this is a method header
+            this.index++;
+            if(this.identifiersDeclared.indexOf(this.tokens[this.index].tokenName) === -1)
+            { // int x    //if x is not declared previously
+                this.identifiersDeclared.push(this.tokens[this.index].tokenName);
+                this.index++;
+                if(this.tokens[this.index].tokenName === '(')
+                { // int x(
+                    // Method header
+                }
+                else if(this.tokens[this.index].tokenName === '=')
+                { // int x =
+                    // Variable declaration
+                }
+                else if(this.tokens[this.index].tokenName === '[')
+                { // int x[
+                    // Array declaration
+                }
+                else
+                {
+                    // Error I think
+                }
+            }
+            else
+            {// int x     //if x is already declared previously
+                //Error
+            }
         }
         else if(this.tokens[this.index].tokenType === "identifier")
         {
