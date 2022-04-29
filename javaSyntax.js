@@ -382,7 +382,6 @@ H5P.JavaSyntax = function ($, Question)
     console.log(tokens);
     console.log(this.getInput("Φ"));
     console.log("BREAK!");
-    console.log("error at: " + Parser.parse(tokens));
     if(this.getInput().length > 0)
     {
         return 100;

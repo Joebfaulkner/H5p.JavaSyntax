@@ -13,6 +13,7 @@ class Parser
         this.tokens = tokens;
         this.classes = classes;
         const identifiersDeclared = []; // This is an array to store all declared identifiers.
+        
         const knownObjects = []; // This is an array that contains all known object types
         let index = 0;
     }
@@ -20,12 +21,12 @@ class Parser
 
     Parser(tokens)
     {
-        
+        const statements = [];
         while(this.index < this.tokens.length)
         {
             if( this.tokens[index].tokenType === "keyword" || this.identifiersDeclared.indexOf(this.tokens[index]) !== -1)
             {
-                this.StatementFinder();
+                statements.push(this.StatementFinder());
             } 
             index ++;
         }
