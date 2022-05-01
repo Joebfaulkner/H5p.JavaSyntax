@@ -1188,7 +1188,7 @@ class Parser
                         { // static final public $
                             // error
                         }
-                    }
+                    } 
                     else
                     { // static final
                         // Object declaration
