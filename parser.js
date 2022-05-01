@@ -19,7 +19,10 @@ class Parser
     }
 
 
-    Parser(tokens)
+    /**
+     * @returns {boolean} works
+     */
+    Parse()
     {
         const statements = [];
         while(this.index < this.tokens.length)
@@ -28,7 +31,201 @@ class Parser
             {
                 statements.push(this.StatementFinder());
             } 
-            index ++;
+            this.index ++;
+        }
+        for(let x = 0; x < statements.length(); x++)
+        {
+            if(statements[x].statmentType === 'Variable')
+            {
+                if(this.VariableParser(statements[x]) !== -1)
+                {
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
+            }
+            else if(statements[x].statmentType === 'Array')
+            {
+                if(this.ArrayParser(statements[x]) !== -1)
+                {
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
+            }
+            else if(statements[x].statmentType === 'Class')
+            {
+                if(this.ClassParser(statements[x]) !== -1)
+                {
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
+            }
+            else if(statements[x].statementType === 'Object')
+            {
+                if(this.ObjectParser(statements[x]) !== -1)
+                {
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
+            }
+            else if(statements[x].statmentType === 'Method')
+            {
+                if(this.MethodParser(statements[x]) !== -1)
+                {
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
+            }
+            else if(statements[x].statementType === 'Import')
+            {
+                if(this.ImportParser(statements[x]) !== -1)
+                {
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
+            }
+            else if(statements[x].statmentType === 'Assignment')
+            {
+                if(this.AssignmentParser(statements[x]) !== -1)
+                {
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
+            }
+            else if(statements[x].statementType === 'MethodCall')
+            {
+                if(this.MethodCallParser(statements[x]) !== -1)
+                {
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
+            }
+            else if(statements[x].statementType === 'For')
+            {
+                if(this.ForParser(statements[x]) !== -1)
+                {
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
+            }
+            else if(statements[x].statementType === 'If')
+            {
+                if(this.IfParser(statements[x]) !== -1)
+                {
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
+            }
+            else if(statements[x].statementType === 'Switch')
+            {
+                if(this.SwitchParser(statements[x]) !== -1)
+                {
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
+            }
+            else if(statements[x].statementType === 'Case')
+            {
+                if(this.CaseParser(statements[x]) !== -1)
+                {
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
+            }
+            else if(statements[x].statementType === 'Break')
+            {
+                if(this.BreakParser(statements[x]) !== -1)
+                {
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
+            }
+            else if(statements[x].statementType === 'While')
+            {
+                if(this.WhileParser(statements[x]) !== -1)
+                {
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
+            }
+            else if(statements[x].statementType === 'Do')
+            {
+                if(this.DoParser(statements[x]) !== -1)
+                {
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
+            }
+            else if(statements[x].statementType === 'Try')
+            {
+                if(this.TryParser(statements[x]) !== -1)
+                {
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
+            }
+            else if(statements[x].statementType === 'Catch')
+            {
+                if(this.CatchParser(statements[x]) !== -1)
+                {
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
+            }
+            else 
+            {
+                // Error
+            }
         }
     }
 
@@ -68,7 +265,7 @@ class Parser
                                 this.index++;
                                 // Object declaration ends with a semicolon:   public final static Object x = new Object();
                             }
-                            return(Statement(startIndex,this.index, 'Object'));
+                            return(new Statement(startIndex,this.index, 'Object'));
 
                         }
                         else if(variableTypes.indexOf(this.tokens[this.index].tokenName) !== -1)
@@ -86,7 +283,7 @@ class Parser
                                         this.index++;
                                         // Variable declaration ends with a semicolon:   public final static x = 2;
                                     }
-                                    return(Statement(startIndex,this.index, 'Variable'));
+                                    return(new Statement(startIndex,this.index, 'Variable'));
                                 }
                                 else if(this.tokens[this.index].tokenName === '[')
                                 { // public final static int x[
@@ -97,7 +294,7 @@ class Parser
                                         this.index++;
                                         // Array declaration ends with a semicolon:   public final static int x[] = new int[10];
                                     }
-                                    return(Statement(startIndex,this.index, 'Array'));
+                                    return(new Statement(startIndex,this.index, 'Array'));
                                 }
                                 else
                                 { // public final static $
@@ -110,10 +307,14 @@ class Parser
                                 // Array declaration
                                 while(this.tokens[this.index].tokenName !== ';')
                                 {
+                                    if(this.identifiersDeclared.indexOf(this.tokens[this.index].tokenName) !== -1)
+                                    {
+                                        this.identifiersDeclared.push(this.tokens[this.index].tokenName);
+                                    }
                                     this.index++;
                                     // Array declaration ends with a semicolon:   public final static int [] x = new int[10];
                                 }
-                                return(Statement(startIndex,this.index, 'Array'));
+                                return(new Statement(startIndex,this.index, 'Array'));
                             }
                             else
                             {
@@ -140,7 +341,7 @@ class Parser
                                 this.index++;
                                 // Object declaration ends with a semicolon:   public final Object x = new Object();
                             }
-                            return(Statement(startIndex,this.index, 'Object'));
+                            return(new Statement(startIndex,this.index, 'Object'));
                         }
                         else if(variableTypes.indexOf(this.tokens[this.index].tokenName) !== -1)
                         { // public final int
@@ -157,7 +358,7 @@ class Parser
                                         this.index++;
                                         // Variable declaration ends with a semicolon:   public final int x = 2;
                                     }
-                                return(Statement(startIndex,this.index, 'Variable'));
+                                return(new Statement(startIndex,this.index, 'Variable'));
                                 }
                                 else if(this.tokens[this.index].tokenName === '[')
                                 { // public final int x[
@@ -168,7 +369,7 @@ class Parser
                                         this.index++;
                                         // Array declaration ends with a semicolon:   public final int x[] = new int[10];
                                     }
-                                    return(Statement(startIndex,this.index, 'Array'));
+                                    return(new Statement(startIndex,this.index, 'Array'));
                                 }
                                 else
                                 { // public final int x $
@@ -182,10 +383,14 @@ class Parser
                                 this.index++;
                                 while(this.tokens[this.index].tokenName !== ';')
                                     {
+                                        if(this.identifiersDeclared.indexOf(this.tokens[this.index].tokenName) !== -1)
+                                        {
+                                            this.identifiersDeclared.push(this.tokens[this.index].tokenName);
+                                        }
                                         this.index++;
                                         // Array declaration ends with a semicolon:   public final static int x[] = new int[10];
                                     }
-                                    return(Statement(startIndex,this.index, 'Array'));
+                                    return(new Statement(startIndex,this.index, 'Array'));
                             }
                             else
                             { // public final int $
@@ -215,7 +420,7 @@ class Parser
                                 this.index++;
                                 // Object declaration ends with a semicolon:   public static final Object x = new Object();
                             }
-                            return(Statement(startIndex,this.index, 'Object'));
+                            return(new Statement(startIndex,this.index, 'Object'));
                             
                         }
                         else if(variableTypes.indexOf(this.tokens[this.index].tokenName) !== -1)
@@ -235,7 +440,7 @@ class Parser
                                         this.index++;
                                         // variable declaration ends with a semicolon:   public static final int x = 2;
                                     }
-                                    return(Statement(startIndex,this.index, 'Variable'));
+                                    return(new Statement(startIndex,this.index, 'Variable'));
                                 }
                                 else if(this.tokens[this.index].tokenName === '[')
                                 { // public static final int x[
@@ -246,7 +451,7 @@ class Parser
                                         this.index++;
                                         // Array declaration ends with a semicolon:   public final static int x[] = new int[10];
                                     }
-                                    return(Statement(startIndex,this.index, 'Array'));
+                                    return(new Statement(startIndex,this.index, 'Array'));
                                 }
                                 else
                                 { // public static final int x $
@@ -259,10 +464,14 @@ class Parser
                                 //Array Declaration
                                 while(this.tokens[this.index].tokenName !== ';')
                                 {
+                                    if(this.identifiersDeclared.indexOf(this.tokens[this.index].tokenName) !== -1)
+                                    {
+                                        this.identifiersDeclared.push(this.tokens[this.index].tokenName);
+                                    }
                                     this.index++;
                                     // Array declaration ends with a semicolon:   public final static int x[] = new int[10];
                                 }
-                                return(Statement(startIndex,this.index, 'Array'));
+                                return(new Statement(startIndex,this.index, 'Array'));
                             }
                             else
                             {
@@ -291,7 +500,7 @@ class Parser
                                this.index++;
                                 // Method headers end with a close parenthesis:   public static void exampleMethod()
                             }
-                            return(Statement(startIndex,this.index, 'Method'));
+                            return(new Statement(startIndex,this.index, 'Method'));
                         }
                         else if(variableTypes.indexOf(this.tokens[this.index].tokenName) !== -1)
                         { // public static int
@@ -310,7 +519,7 @@ class Parser
                                         this.index++;
                                         // Method headers end with a close parenthesis:   public static int exampleMethod()
                                     }
-                                    return(Statement(startIndex,this.index, 'Method'));
+                                    return(new Statement(startIndex,this.index, 'Method'));
                                 }
                                 else if(this.tokens[this.index].tokenName === '=')
                                 { // public static int x =
@@ -320,7 +529,7 @@ class Parser
                                         this.index++;
                                         // Object declaration ends with a semicolon:   public final static Object x = new Object();
                                     }
-                                    return(Statement(startIndex,this.index, 'Variable'));
+                                    return(new Statement(startIndex,this.index, 'Variable'));
                                 }
                                 else if(this.tokens[this.index].tokenName === '[')
                                 { // public static int x[
@@ -330,7 +539,7 @@ class Parser
                                         this.index++;
                                         // Array declaration ends with a semicolon:   public static int x[] = new int[10];
                                     }
-                                    return(Statement(startIndex,this.index, 'Array'));
+                                    return(new Statement(startIndex,this.index, 'Array'));
                                 }
                                 else
                                 {
@@ -344,10 +553,14 @@ class Parser
                                 this.index++;
                                 while(this.tokens[this.index].tokenName !== ';')
                                 {
+                                    if(this.identifiersDeclared.indexOf(this.tokens[this.index].tokenName) !== -1)
+                                    {
+                                        this.identifiersDeclared.push(this.tokens[this.index].tokenName);
+                                    }
                                     this.index++;
                                     // Array declaration ends with a semicolon:   public static int [] x = new int[10];
                                 }
-                                return(Statement(startIndex,this.index, 'Array'));
+                                return(new Statement(startIndex,this.index, 'Array'));
                             }
                             else
                             {// public static int $
@@ -363,7 +576,7 @@ class Parser
                                 this.index++;
                                 // Object declaration ends with a semicolon:   public static Object x = new Object();
                             }
-                            return(Statement(startIndex,this.index, 'Object'));
+                            return(new Statement(startIndex,this.index, 'Object'));
                         }
                         else
                         {
@@ -388,7 +601,7 @@ class Parser
                             this.index++;
                             // Method headers end with a close parenthesis:   public void exampleMethod()
                         }
-                        return(Statement(startIndex,this.index, 'Method'));
+                        return(new Statement(startIndex,this.index, 'Method'));
                         
                     }
                     else if(this.tokens[this.index].tokenName === 'class' || this.tokens[this.index].tokenName === 'interface')
@@ -400,7 +613,7 @@ class Parser
                             this.index++;
                             // class headers end right before open braces:   public class HelloWorld
                         }
-                        return(Statement(startIndex,this.index, 'Class'));
+                        return(new Statement(startIndex,this.index, 'Class'));
                     }
                     else if(knownObjects.indexOf(this.tokens[this.index].tokenName))
                     { // public Object
@@ -411,7 +624,7 @@ class Parser
                             this.index++;
                             // Object declaration ends in semicolons:   public Object x = new Object();
                         }
-                        return(Statement(startIndex,this.index, 'Object'));
+                        return(new Statement(startIndex,this.index, 'Object'));
                     }
                     else if(variableTypes.indexOf(this.tokens[this.index].tokenName) !== -1)
                     {
@@ -430,7 +643,7 @@ class Parser
                                     this.index++;
                                     // Method headers end with a close parenthesis:   public int exampleMethod()
                                 }
-                                return(Statement(startIndex,this.index, 'Method'));
+                                return(new Statement(startIndex,this.index, 'Method'));
                             }
                             else if(this.tokens[this.index].tokenName === '=')
                             { // public int x =
@@ -441,7 +654,7 @@ class Parser
                                     this.index++;
                                     // Variable declaration ends with a semicolon:   public int x = 2;
                                 }
-                                return(Statement(startIndex,this.index, 'Variable'));
+                                return(new Statement(startIndex,this.index, 'Variable'));
                             }
                             else if(this.tokens[this.index].tokenName === '[')
                             { // public int x[
@@ -452,7 +665,7 @@ class Parser
                                     this.index++;
                                     // Array declaration ends with a semicolon:   public int x [] = new int[10];
                                 }
-                                return(Statement(startIndex,this.index, 'Array'));
+                                return(new Statement(startIndex,this.index, 'Array'));
                             }
                             else
                             { // public int x $
@@ -466,10 +679,14 @@ class Parser
                             this.index++;
                             while(this.tokens[this.index].tokenName !== ';')
                             {
+                                if(this.identifiersDeclared.indexOf(this.tokens[this.index].tokenName) !== -1)
+                                {
+                                    this.identifiersDeclared.push(this.tokens[this.index].tokenName);
+                                }
                                 this.index++;
                                 // Array declaration ends with a semicolon:   public static int [] x = new int[10];
                             }
-                            return(Statement(startIndex,this.index, 'Array'));
+                            return(new Statement(startIndex,this.index, 'Array'));
                         }
                         else
                         { // public int $
@@ -506,7 +723,7 @@ class Parser
                                 this.index++;
                                 // Object declaration ends in semicolons:   final public static Object x = new Object();
                             }
-                            return(Statement(startIndex,this.index, 'Object'));
+                            return(new Statement(startIndex,this.index, 'Object'));
                         }
                         else if(variableTypes.indexOf(this.tokens[this.index]) !== -1)
                         {   //final public static int
@@ -519,10 +736,14 @@ class Parser
                                 this.index++;
                                 while(this.tokens[this.index].tokenName !== ';')
                                 {
+                                    if(this.identifiersDeclared.indexOf(this.tokens[this.index].tokenName) !== -1)
+                                    {
+                                        this.identifiersDeclared.push(this.tokens[this.index].tokenName);
+                                    }
                                     this.index++;
                                     // Array declaration ends with a semicolon:   final public static int [] x = new int[10];
                                 }
-                                return(Statement(startIndex,this.index, 'Array'));
+                                return(new Statement(startIndex,this.index, 'Array'));
                             }
                             if(this.identifiersDeclared.indexOf(this.tokens[this.index].tokenName) === -1)
                             { // final public static int x    //if x is not declared previously
@@ -535,7 +756,7 @@ class Parser
                                         this.index++;
                                         // Variable declaration ends with a semicolon:   final public static int x = 2;
                                     }
-                                    return(Statement(startIndex,this.index, 'Variable'));
+                                    return(new Statement(startIndex,this.index, 'Variable'));
                                 }
                                 else if(this.tokens[this.index] === '[')
                                 {   // final public static int x [
@@ -546,7 +767,7 @@ class Parser
                                         this.index++;
                                         // Array declaration ends with a semicolon:   final public static int x [] = new int[10];
                                     }
-                                    return(Statement(startIndex,this.index, 'Array'));
+                                    return(new Statement(startIndex,this.index, 'Array'));
                                 }
                                 else
                                 { // final public static int x $
@@ -578,7 +799,7 @@ class Parser
                                 this.index++;
                                 // Object declaration ends in semicolons:  final public Object x = new Object();
                             }
-                            return(Statement(startIndex,this.index, 'Object'));
+                            return(new Statement(startIndex,this.index, 'Object'));
                         }
                         else if(variableTypes.indexOf(this.tokens[this.index]) !== -1)
                         {   //final public int
@@ -591,10 +812,14 @@ class Parser
                                 this.index++;
                                 while(this.tokens[this.index].tokenName !== ';')
                                 {
+                                    if(this.identifiersDeclared.indexOf(this.tokens[this.index].tokenName) !== -1)
+                                    {
+                                        this.identifiersDeclared.push(this.tokens[this.index].tokenName);
+                                    }
                                     this.index++;
                                     // Array declaration ends with a semicolon:   public static int [] x = new int[10];
                                 }
-                                return(Statement(startIndex,this.index, 'Array'));
+                                return(new Statement(startIndex,this.index, 'Array'));
                             }
                             else if(this.identifiersDeclared.indexOf(this.tokens[this.index].tokenName) === -1)
                             { // final public int x    //if x is not declared previously
@@ -608,7 +833,7 @@ class Parser
                                         this.index++;
                                         // Array declaration ends with a semicolon:   final public int [] x = new int[10];
                                     }
-                                    return(Statement(startIndex,this.index, 'Array'));
+                                    return(new Statement(startIndex,this.index, 'Array'));
                                 }
                                 else if(this.tokens[this.index].tokenName === '[')
                                 { // final public int x [
@@ -619,7 +844,7 @@ class Parser
                                         this.index++;
                                         // Array declaration ends with a semicolon:   final public int x [] = new int[10];
                                     }
-                                    return(Statement(startIndex,this.index, 'Array'));
+                                    return(new Statement(startIndex,this.index, 'Array'));
                                 }
                                 else
                                 { // final public int x $
@@ -655,7 +880,7 @@ class Parser
                                 this.index++;
                                 // Object declaration ends in semicolons:   final static public Object x = new Object();
                             }
-                            return(Statement(startIndex,this.index, 'Object'));
+                            return(new Statement(startIndex,this.index, 'Object'));
                             }
                         else if(variableTypes.indexOf(this.tokens[this.index]) !== -1)
                         {   //final static public int
@@ -668,14 +893,19 @@ class Parser
                                 this.index++;
                                 while(this.tokens[this.index].tokenName !== ';')
                                 {
+                                    if(this.identifiersDeclared.indexOf(this.tokens[this.index].tokenName) !== -1)
+                                    {
+                                        this.identifiersDeclared.push(this.tokens[this.index].tokenName);
+                                    }
                                     this.index++;
                                     // Array declaration ends with a semicolon:   final static public int [] x = new int[10];
                                 }
-                                return(Statement(startIndex,this.index, 'Array'));
+                                return(new Statement(startIndex,this.index, 'Array'));
                             }
                             else if(this.identifiersDeclared.indexOf(this.tokens[this.index].tokenName) === -1)
                             { // final static public int x    //if x is not declared previously
                                 // varaible declaration or array declaration
+                                this.identifiersDeclared.push(this.tokens[this.index].tokenName);
                                 if(this.tokens[this.index].tokenName === '=')
                                 { // final static public int x =
                                     // Variable declaration
@@ -685,7 +915,7 @@ class Parser
                                         this.index++;
                                         // Variable declaration ends with a semicolon:   final static public int x = 2;
                                     }
-                                    return(Statement(startIndex,this.index, 'Variable'));
+                                    return(new Statement(startIndex,this.index, 'Variable'));
                                 }
                                 else if(this.tokens[this.index].tokenName === '[')
                                 { // final static public int x [
@@ -696,7 +926,7 @@ class Parser
                                         this.index++;
                                         // Array declaration ends with a semicolon:  final static public int x [] = new int[10];
                                     }
-                                    return(Statement(startIndex,this.index, 'Array'));
+                                    return(new Statement(startIndex,this.index, 'Array'));
                                 }
                                 else
                                 {
@@ -729,7 +959,7 @@ class Parser
                                 this.index++;
                                 // Object declaration ends in semicolons:   final static Object x = new Object();
                             }
-                            return(Statement(startIndex,this.index, 'Object'));
+                            return(new Statement(startIndex,this.index, 'Object'));
                         }
                         else if(variableTypes.indexOf(this.tokens[this.index]) !== -1)
                         {   //final static int
@@ -742,14 +972,19 @@ class Parser
                                 this.index++;
                                 while(this.tokens[this.index].tokenName !== ';')
                                 {
+                                    if(this.identifiersDeclared.indexOf(this.tokens[this.index].tokenName) !== -1)
+                                    {
+                                        this.identifiersDeclared.push(this.tokens[this.index].tokenName);
+                                    }
                                     this.index++;
                                     // Array declaration ends with a semicolon:   final static int [] x = new int[10];
                                 }
-                                return(Statement(startIndex,this.index, 'Array'));
+                                return(new Statement(startIndex,this.index, 'Array'));
                             }
                             else if(this.identifiersDeclared.indexOf(this.tokens[this.index].tokenName) === -1)
                             { // final static int x    //if x is not declared previously
                                 // varaible declaration or array declaration
+                                this.identifiersDeclared.push(this.tokens[this.index].tokenName);
                                 if(this.tokens[this.index].tokenName === '=')
                                 { // final static int x =
                                     // Variable declaration
@@ -759,7 +994,7 @@ class Parser
                                         this.index++;
                                         // Variable declaration ends with a semicolon:   final static int x = 2;
                                     }
-                                    return(Statement(startIndex,this.index, 'Variable'));
+                                    return(new Statement(startIndex,this.index, 'Variable'));
                                 }
                                 else if(this.tokens[this.index].tokenName === '[')
                                 { // final static int x [
@@ -770,7 +1005,7 @@ class Parser
                                         this.index++;
                                         // Array declaration ends with a semicolon:  final static int x [] = new int[10];
                                     }
-                                    return(Statement(startIndex,this.index, 'Array'));
+                                    return(new Statement(startIndex,this.index, 'Array'));
                                 }
                                 else
                                 {
@@ -804,7 +1039,7 @@ class Parser
                             this.index++;
                             // Object declaration ends in semicolons:   final Object x = new Object();
                         }
-                        return(Statement(startIndex,this.index, 'Object'));
+                        return(new Statement(startIndex,this.index, 'Object'));
                     }
                     else if(variableTypes.indexOf(this.tokens[this.index]) !== -1)
                     {   //final int
@@ -817,14 +1052,19 @@ class Parser
                             this.index++;
                             while(this.tokens[this.index].tokenName !== ';')
                             {
+                                if(this.identifiersDeclared.indexOf(this.tokens[this.index].tokenName) !== -1)
+                                {   
+                                    this.identifiersDeclared.push(this.tokens[this.index].tokenName);
+                                }
                                 this.index++;
                                 // Array declaration ends with a semicolon:   final int [] x = new int[10];
                             }
-                            return(Statement(startIndex,this.index, 'Array'));
+                            return(new Statement(startIndex,this.index, 'Array'));
                         }
                         else if(this.identifiersDeclared.indexOf(this.tokens[this.index].tokenName) === -1)
                         { // final int x    //if x is not declared previously
                             // varaible declaration or array declaration
+                            this.identifiersDeclared.push(this.tokens[this.index].tokenName);
                             if(this.tokens[this.index].tokenName === '=')
                             { // final int x =
                                 // Variable declaration
@@ -834,7 +1074,7 @@ class Parser
                                     this.index++;
                                     // Variable declaration ends with a semicolon:   final int x = 2;
                                 }
-                                return(Statement(startIndex,this.index, 'Variable'));
+                                return(new Statement(startIndex,this.index, 'Variable'));
                             }
                             else if(this.tokens[this.index].tokenName === '[')
                             { // final int x [
@@ -845,7 +1085,7 @@ class Parser
                                     this.index++;
                                     // Array declaration ends with a semicolon:  final int x [] = new int[10];
                                 }
-                                return(Statement(startIndex,this.index, 'Array'));
+                                return(new Statement(startIndex,this.index, 'Array'));
                             }
                             else
                             {
@@ -885,7 +1125,7 @@ class Parser
                                 this.index++;
                                 // Object declaration ends in semicolons:   static final public Object x = new Object();
                             }
-                            return(Statement(startIndex,this.index, 'Object'));
+                            return(new Statement(startIndex,this.index, 'Object'));
                         }
                         else if(variableTypes.indexOf(this.tokens[this.index]) !== -1)
                         {   //static final public int
@@ -898,14 +1138,19 @@ class Parser
                                 this.index++;
                                 while(this.tokens[this.index].tokenName !== ';')
                                 {
+                                    if(this.identifiersDeclared.indexOf(this.tokens[this.index].tokenName) !== -1)
+                                    {
+                                        this.identifiersDeclared.push(this.tokens[this.index].tokenName);
+                                    }
                                     this.index++;
                                     // Array declaration ends with a semicolon:   static final public int [] x = new int[10];
                                 }
-                                return(Statement(startIndex,this.index, 'Array'));
+                                return(new Statement(startIndex,this.index, 'Array'));
                             }
                             else if(this.identifiersDeclared.indexOf(this.tokens[this.index].tokenName) === -1)
                             { // static final public int x    //if x is not declared previously
                                 // varaible declaration or array declaration
+                                this.identifiersDeclared.push(this.tokens[this.index].tokenName);
                                 if(this.tokens[this.index].tokenName === '=')
                                 { // static final public int x =
                                     // Variable declaration
@@ -915,7 +1160,7 @@ class Parser
                                         this.index++;
                                         // Variable declaration ends with a semicolon:   static final public int x = 2;
                                     }
-                                    return(Statement(startIndex,this.index, 'Variable'));
+                                    return(new Statement(startIndex,this.index, 'Variable'));
                                 }
                                 else if(this.tokens[this.index].tokenName === '[')
                                 { // static final public int x [
@@ -926,7 +1171,7 @@ class Parser
                                         this.index++;
                                         // Array declaration ends with a semicolon:  static final public int x [] = new int[10];
                                     }
-                                    return(Statement(startIndex,this.index, 'Array'));
+                                    return(new Statement(startIndex,this.index, 'Array'));
                                 }
                                 else
                                 {
@@ -959,7 +1204,7 @@ class Parser
                                 this.index++;
                                 // Object declaration ends in semicolons:   public Object x = new Object();
                             }
-                            return(Statement(startIndex,this.index, 'Object'));
+                            return(new Statement(startIndex,this.index, 'Object'));
                         }
                         else if(variableTypes.indexOf(this.tokens[this.index]) !== -1)
                         {   //static final int
@@ -969,17 +1214,22 @@ class Parser
                             if(this.tokens[this.index] === '[')
                             { // static final int [
                                 // Array declaration
+                                if(this.identifiersDeclared.indexOf(this.tokens[this.index].tokenName) !== -1)
+                                {
+                                    this.identifiersDeclared.push(this.tokens[this.index].tokenName);
+                                }
                                 this.index++;
                                 while(this.tokens[this.index].tokenName !== ';')
                                 {
                                     this.index++;
                                     // Array declaration ends with a semicolon:   static final int [] x = new int[10];
                                 }
-                                return(Statement(startIndex,this.index, 'Array'));
+                                return(new Statement(startIndex,this.index, 'Array'));
                             }
                             else if(this.identifiersDeclared.indexOf(this.tokens[this.index].tokenName) === -1)
                             { // static final int x    //if x is not declared previously
                                 // varaible declaration or array declaration
+                                this.identifiersDeclared.push(this.tokens[this.index].tokenName);
                                 if(this.tokens[this.index].tokenName === '=')
                                 { // static final int x =
                                     // Variable declaration
@@ -989,7 +1239,7 @@ class Parser
                                         this.index++;
                                         // Variable declaration ends with a semicolon:   static final int x = 2;
                                     }
-                                    return(Statement(startIndex,this.index, 'Variable'));
+                                    return(new Statement(startIndex,this.index, 'Variable'));
                                 }
                                 else if(this.tokens[this.index].tokenName === '[')
                                 { // static final int x [
@@ -1000,7 +1250,7 @@ class Parser
                                         this.index++;
                                         // Array declaration ends with a semicolon:  static final int x [] = new int[10];
                                     }
-                                    return(Statement(startIndex,this.index, 'Array'));
+                                    return(new Statement(startIndex,this.index, 'Array'));
                                 }
                                 else
                                 {
@@ -1036,7 +1286,7 @@ class Parser
                                 this.index++;
                                 // Object declaration ends in semicolons:   static public final Object x = new Object();
                             }
-                            return(Statement(startIndex,this.index, 'Object'));
+                            return(new Statement(startIndex,this.index, 'Object'));
                         }
                         else if(variableTypes.indexOf(this.tokens[this.index]) !== -1)
                         {   //static public final int
@@ -1049,14 +1299,19 @@ class Parser
                                 this.index++;
                                 while(this.tokens[this.index].tokenName !== ';')
                                 {
+                                    if(this.identifiersDeclared.indexOf(this.tokens[this.index].tokenName) !== -1)
+                                    {
+                                        this.identifiersDeclared.push(this.tokens[this.index].tokenName);
+                                    }
                                     this.index++;
                                     // Array declaration ends with a semicolon:   public static int [] x = new int[10];
                                 }
-                                return(Statement(startIndex,this.index, 'Array'));
+                                return(new Statement(startIndex,this.index, 'Array'));
                             }
                             else if(this.identifiersDeclared.indexOf(this.tokens[this.index].tokenName) === -1)
                             { // static public final int x    //if x is not declared previously
                                 // varaible declaration or array declaration
+                                this.identifiersDeclared.push(this.tokens[this.index].tokenName);
                                 if(this.tokens[this.index].tokenName === '=')
                                 { // static public final int x =
                                     // Variable declaration
@@ -1066,7 +1321,7 @@ class Parser
                                         this.index++;
                                         // Variable declaration ends with a semicolon:   static public final int x = 2;
                                     }
-                                    return(Statement(startIndex,this.index, 'Variable'));
+                                    return(new Statement(startIndex,this.index, 'Variable'));
                                 }
                                 else if(this.tokens[this.index].tokenName === '[')
                                 { // static public final int x [
@@ -1077,7 +1332,7 @@ class Parser
                                         this.index++;
                                         // Array declaration ends with a semicolon:  static public final int x [] = new int[10];
                                     }
-                                    return(Statement(startIndex,this.index, 'Array'));
+                                    return(new Statement(startIndex,this.index, 'Array'));
                                 }
                                 else
                                 {
@@ -1111,7 +1366,7 @@ class Parser
                                 this.index++;
                                 // Method headers end with a close parenthesis:   static public void exampleMethod()
                             }
-                            return(Statement(startIndex,this.index, 'Method'));
+                            return(new Statement(startIndex,this.index, 'Method'));
                         }
                         else if(variableTypes.indexOf(this.tokens[this.index].tokenName) !== -1)
                         { // static public int
@@ -1130,11 +1385,12 @@ class Parser
                                         this.index++;
                                         // Method headers end with a close parenthesis:   static public void exampleMethod()
                                     }
-                                    return(Statement(startIndex,this.index, 'Method'));
+                                    return(new Statement(startIndex,this.index, 'Method'));
                                 }
                                 else if(this.identifiersDeclared.indexOf(this.tokens[this.index].tokenName) === -1)
                                 { // static public int x    //if x is not declared previously
                                     // varaible declaration or array declaration
+                                    this.identifiersDeclared.push(this.tokens[this.index].tokenName);
                                     if(this.tokens[this.index].tokenName === '=')
                                     { // static public int x =
                                         // Variable declaration
@@ -1144,7 +1400,7 @@ class Parser
                                             this.index++;
                                             // Variable declaration ends with a semicolon:   static public int x = 2;
                                         }
-                                        return(Statement(startIndex,this.index, 'Variable'));
+                                        return(new Statement(startIndex,this.index, 'Variable'));
                                     }
                                     else if(this.tokens[this.index].tokenName === '[')
                                     { // static public int x [
@@ -1155,7 +1411,7 @@ class Parser
                                             this.index++;
                                             // Array declaration ends with a semicolon:  static public int x [] = new int[10];
                                         }
-                                        return(Statement(startIndex,this.index, 'Array'));
+                                        return(new Statement(startIndex,this.index, 'Array'));
                                     }
                                     else
                                     {
@@ -1164,15 +1420,19 @@ class Parser
                                     }
                                 }
                                 else if(this.tokens[this.index].tokenName === '[')
-                                { // static public int x[
+                                { // static public int [
                                     // Array declaration
                                     this.index++;
                                     while(this.tokens[this.index].tokenName !== ';')
                                     {
+                                        if(this.identifiersDeclared.indexOf(this.tokens[this.index].tokenName) !== -1)
+                                        {
+                                            this.identifiersDeclared.push(this.tokens[this.index].tokenName);
+                                        }
                                         this.index++;
                                         // Array declaration ends with a semicolon:   static public int [] x = new int[10];
                                     }
-                                    return(Statement(startIndex,this.index, 'Array'));
+                                    return(new Statement(startIndex,this.index, 'Array'));
                                 }
                                 else
                                 {  // static public int x $
@@ -1194,7 +1454,7 @@ class Parser
                                 this.index++;
                                 // Object declaration ends in semicolons:   static public Object x = new Object();
                             }
-                            return(Statement(startIndex,this.index, 'Object'));
+                            return(new Statement(startIndex,this.index, 'Object'));
                         }
                         else
                         { // static public $
@@ -1218,7 +1478,7 @@ class Parser
                         this.index++;
                         // Method headers end with a close parenthesis:   static void exampleMethod()
                     }
-                    return(Statement(startIndex,this.index, 'Method'));
+                    return(new Statement(startIndex,this.index, 'Method'));
                     
                     }
                 else if(variableTypes.indexOf(this.tokens[this.index].tokenName) !== -1)
@@ -1238,7 +1498,7 @@ class Parser
                                 this.index++;
                                 // Method headers end with a close parenthesis:   static int exampleMethod()
                             }
-                            return(Statement(startIndex,this.index, 'Method'));
+                            return(new Statement(startIndex,this.index, 'Method'));
                         }
                         else if(this.tokens[this.index].tokenName === '=')
                         { // static int x =
@@ -1249,7 +1509,7 @@ class Parser
                                 this.index++;
                                 // Variable declaration ends with a semicolon:   static int x = 2;
                             }
-                            return(Statement(startIndex,this.index, 'Variable'));
+                            return(new Statement(startIndex,this.index, 'Variable'));
                         }
                         else if(this.tokens[this.index].tokenName === '[')
                         { // static int x[
@@ -1260,7 +1520,7 @@ class Parser
                                 this.index++;
                                 // Array declaration ends with a semicolon:   static int x [] = new int[10];
                             }
-                            return(Statement(startIndex,this.index, 'Array'));
+                            return(new Statement(startIndex,this.index, 'Array'));
                         }
                         else
                         {
@@ -1273,10 +1533,14 @@ class Parser
                         this.index++;
                         while(this.tokens[this.index].tokenName !== ';')
                         {
+                            if(this.identifiersDeclared.indexOf(this.tokens[this.index].tokenName) !== -1)
+                            {
+                                this.identifiersDeclared.push(this.tokens[this.index].tokenName);
+                            }
                             this.index++;
                             // Array declaration ends with a semicolon:   static int [] x = new int[10];
                         }
-                        return(Statement(startIndex,this.index, 'Array'));
+                        return(new Statement(startIndex,this.index, 'Array'));
                     }
                     else
                     {// static int $
@@ -1292,7 +1556,7 @@ class Parser
                         this.index++;
                         // Object declaration ends in semicolons:   public Object x = new Object();
                     }
-                    return(Statement(startIndex,this.index, 'Object'));
+                    return(new Statement(startIndex,this.index, 'Object'));
                 }
                 else
                 {
@@ -1319,7 +1583,7 @@ class Parser
                         this.index++;
                         // Method headers end with a close parenthesis:   int exampleMethod()
                     }
-                    return(Statement(startIndex,this.index, 'Method'));
+                    return(new Statement(startIndex,this.index, 'Method'));
                     
                 }
                 else if(this.tokens[this.index].tokenName === '=')
@@ -1331,7 +1595,7 @@ class Parser
                         this.index++;
                         // Variable declaration ends with a semicolon:   int x = 2;
                     }
-                    return(Statement(startIndex,this.index, 'Variable'));
+                    return(new Statement(startIndex,this.index, 'Variable'));
                 }
                 else if(this.tokens[this.index].tokenName === '[')
                 { // int x[
@@ -1342,7 +1606,7 @@ class Parser
                         this.index++;
                         // Array declaration ends with a semicolon:   int x [] = new int[10];
                     }
-                    return(Statement(startIndex,this.index, 'Array'));
+                    return(new Statement(startIndex,this.index, 'Array'));
                 }
                 else
                 { // int $
@@ -1356,9 +1620,13 @@ class Parser
                 while(this.tokens[this.index].tokenName !== ';')
                 {
                     this.index++;
+                    if(this.identifiersDeclared.indexOf(this.tokens[this.index].tokenName) !== -1)
+                    {
+                        this.identifiersDeclared.push(this.tokens[this.index].tokenName);
+                    }
                     // Array declaration ends with a semicolon:   int [] x = new int[10];
                 }
-                return(Statement(startIndex,this.index, 'Array'));
+                return(new Statement(startIndex,this.index, 'Array'));
             }
             else
             {// int $
@@ -1368,50 +1636,201 @@ class Parser
         else if(this.tokens[this.index].tokenType === "identifier")
         {
             // We know we are doing something with an already declared identifier
+            // Can be an assignment
+            // Can a method call
+            this.index++;
+            let flag = 'unKnown';
+            while(this.tokens[this.index].tokenName !== ';')
+            {
+                if(this.tokens[this.index].tokenName === '.')
+                {
+                    flag = 'MethodCall'
+                }
+                else if(this.tokens[this.index].tokenName === '=')
+                {
+                    flag = 'Assignment'
+                }
+                this.index++;
+            }
+            return(new Statement(startIndex, this.index, flag));
         }
-        else if(this.tokens[this.index].tokenName === "class")
+        else if(this.tokens[this.index].tokenName === "class" || this.tokens[this.index] === "interface")
         {
-            // We know this is a class header
+            // This is a class header
+            this.index++;
+            while(this.tokens[this.index + 1].tokenName !== '{')
+            {
+                this.index++;
+                // class headers end right before open braces:   class HelloWorld
+            }
+            return(new Statement(startIndex,this.index, 'Class'));
         }
         else if(this.tokens[this.index].tokenName === "import")
         {
             // We know this is an import statment
+            this.index ++;
+            while(this.tokens[this.index].tokenName !== ';')
+            {
+                this.index++;
+                // import statements end with a semicolon:      import java.util.Scanner;
+            }
+            return(new Statement(startIndex, this.index, 'Import'));
         }
         else if(this.tokens[this.index].tokenName === "for")
         {
             // We know this is a for loop
+            // This is a class header
+            this.index++;
+            while(this.tokens[this.index + 1].tokenName !== '{')
+            {
+                this.index++;
+                // for loops end right before open braces:   for(int x = 0; x < 10; x++)
+            }
+            return(new Statement(startIndex,this.index, 'For'));
         }
         else if(this.tokens[this.index].tokenName === "if")
         {
             // We know this is an if statemenet
+            this.index++;
+            let parenthNum = 0; // parenthNum is being used to determine when the parenthesis after if is closed
+            if(this.tokens[this.index].tokenName === '(')
+            {
+                parenthNum++;
+            }
+            else
+            {
+                // Error
+            }
+            this.index ++;
+            while(parenthNum !== 0)
+            {
+                if(this.tokens[this.index].tokenName === '(')
+                {
+                    parenthNum++;
+                }
+                else if(this.tokens[this.index].tokenName === ')')
+                {
+                    parenthNum--;
+                }
+                this.index++;
+            }
+            // if statements end when their first parenthesis closes:       if(5 < (int)(3*2.2))
+            return(new Statement(startIndex, this.index, 'If'));
         }
         else if(this.tokens[this.index].tokenName === "return")
         {
             // We know this is a return statement
+            this.index++;
+            while(this.tokens[this.index].tokenName !== ';')
+            {
+                this.index++;
+                // return statements end with a semicolon:   return 2;
+            }
+            return(new Statement(startIndex,this.index, 'Return'));
+
         }
-        else if(this.tokens[this.index].tokenName === "swtitch")
+        else if(this.tokens[this.index].tokenName === "switch")
         {
             // We know this is a switch statement
+            this.index++;
+            while(this.tokens[this.index + 1].tokenName !== '{')
+            {
+                this.index++;
+                // switch statments end right before open braces:   switch(5)
+            }
+            return(new Statement(startIndex,this.index, 'Switch'));
         }
         else if(this.tokens[this.index].tokenName === "case")
         {
             // We know this is a case statement
+            this.index++;
+            while(this.tokens[this.index].tokenName !== ':')
+            {
+                this.index++;
+                // case statements end with :       case 2:
+            }
+            return(new Statement(startIndex,this.index, 'Case'));
+
         }
         else if(this.tokens[this.index].tokenName === "break")
         {
-            // WE know this is a break statement
+            // We know this is a break statement
+            this.index++;
+            while(this.tokens[this.index].tokenName !== ';')
+            {
+                this.index++;
+                // Break statements end with a semicolon:   break;
+            }
+            return(new Statement(startIndex,this.index, 'Break'));
         }
         else if(this.tokens[this.index].tokenName === "while")
         {
             // We know this is a while loop
+            this.index++;
+            let parenthNum = 0; // parenthNum is being used to determine when the parenthesis after while is closed
+            if(this.tokens[this.index].tokenName === '(')
+            {
+                parenthNum++;
+            }
+            else
+            {
+                // Error
+            }
+            this.index ++;
+            while(parenthNum !== 0)
+            {
+                if(this.tokens[this.index].tokenName === '(')
+                {
+                    parenthNum++;
+                }
+                else if(this.tokens[this.index].tokenName === ')')
+                {
+                    parenthNum--;
+                }
+                this.index++;
+            }
+            // while statements end when their first parenthesis closes:       while(x < (int)(2*3.2))
+            return(new Statement(startIndex, this.index, 'While'));
+
         }
         else if(this.tokens[this.index].tokenName === "do")
         {
             // We know this is a do statement at the beggining of a do while loop
+            // do statements are just do
+            return(new Statement(startIndex, this.index, 'Do'));
         }
         else if(this.tokens[this.index].tokenName === "try")
         {
             // We know that this is the begining of a try block
+            this.index++;
+            while(this.tokens[this.index + 1].tokenName !== '{')
+            {
+                this.index++;
+                // try blocks end right before open braces:   try (Printable writer = new PrintWriter(fileName))
+            }
+            return(new Statement(startIndex,this.index, 'Try'));
+        }
+        else if(this.tokens[this.index].tokenName === "catch")
+        {
+            // We know that this is the begining of a catch block
+            this.index++;
+            while(this.tokens[this.index + 1].tokenName !== '{')
+            {
+                this.index++;
+                // catch blocks end right before open braces:   catch(Exception e)
+            }
+            return(new Statement(startIndex,this.index, 'Catch'));
+        }
+        else if(knownObjects.indexOf(this.tokens[this.index].tokenName) !== -1)
+        {
+            // We know that this is an object declaration
+            this.index++;
+            while(this.tokens[this.index].tokenName !== ';')
+            {
+                this.index++;
+                // Object declaration ends in semicolons:   Object x = new Object();
+            }
+            return(new Statement(startIndex,this.index, 'Object'));
         }
         else
         {
@@ -1423,15 +1842,147 @@ class Parser
 
 
 
+    /**
+     * @param {Statement} statement
+     * @returns {int} errorIndex
+     */
+    ArrayParser(statement)
+    {
 
-
-
+    }
+    /**
+     * @param {Statement} statement
+     * @returns {int} errorIndex
+     */
+    ClassParser(statement)
+    {
+         
+    }
+    /**
+     * @param {Statement} statement
+     * @returns {int} errorIndex
+     */
+    ImportParser(statement)
+    {
+        
+    }
+    /**
+     * @param {Statement} statement
+     * @returns {int} errorIndex
+     */
+    ForParser(statement)
+    {
+        
+    }
+    /**
+     * @param {Statement} statement
+     * @returns {int} errorIndex
+     */
+    MethodParser(statement)
+    {
+        
+    }
+    /**
+     * @param {Statement} statement
+     * @returns {int} errorIndex
+     */
+    ReturnParser(statement)
+    {
+        
+    }
+    /**
+     * @param {Statement} statement
+     * @returns {int} errorIndex
+     */
+    MethodCallParser(statement)
+    {
+        
+    }
+    /**
+     * @param {Statement} statement
+     * @returns {int} errorIndex
+     */
+    SwitchParser(statement)
+    {
+        
+    }
+    /**
+     * @param {Statement} statement
+     * @returns {int} errorIndex
+     */
+    CaseParser(statement)
+    {
+        
+    }
+    /**
+     * @param {Statement} statement
+     * @returns {int} errorIndex
+     */
+    BreakParser(statement)
+    {
+        
+    }
+    /**
+     * @param {Statement} statement
+     * @returns {int} errorIndex
+     */
+    WhileParser(statement)
+    {
+        
+    }
+    /**
+     * @param {Statement} statement
+     * @returns {int} errorIndex
+     */
+    DoParser(statement)
+    {
+        
+    }
+    /**
+     * @param {Statement} statement
+     * @returns {int} errorIndex
+     */
+    TryParser(statement)
+    {
+        
+    }
+    /**
+     * @param {Statement} statement
+     * @returns {int} errorIndex
+     */
+    ObjectParser(statement)
+    {
+        
+    }
+    /**
+     * @param {Statement} statement
+     * @returns {int} errorIndex
+     */
+     AssignmentParser(statement)
+     {
+         
+     }
+     /**
+     * @param {Statement} statement
+     * @returns {int} errorIndex
+     */
+    IfParser(statement)
+    {
+        
+    }
+    /**
+     * @param {Statement} statement
+     * @returns {int} errorIndex
+     */
+     CatchParser(statement)
+     {
+         
+     }
     /**
      * 
-     * @param {Array} tokens 
      * @returns {int} indexOfError
      */
-    VariableParser(tokens) 
+    VariableParser() 
     {
         const seperators = [' ', 'Φ', '(', ')', '{', '}', '[', ']', '.', ';'];
         const opperators = ['=' , '+' , '-' , '/' , '%' , '+=' , '-=' , '/=' , '*=' , '%=' , '==' , '<' , '>' , '<=' , '>=' , '++' , '--'];
