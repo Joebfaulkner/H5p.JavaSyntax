@@ -2,19 +2,21 @@ class Parser
 {
     /**
      * @constructor
-     * @param {String} parserType
      * @param {Array} tokens
      * @param {Array} classes
      * 
      */
-    constructor(parserType, tokens)
+    constructor(tokens, classes)
     {
-        this.parserType = parserType;
         this.tokens = tokens;
         this.classes = classes;
         const identifiersDeclared = []; // This is an array to store all declared identifiers.
         const identifiers =[]; // This is also an array to store all declared identifiers but with token objects to store the identifier's type too.
         const knownObjects = []; // This is an array that contains all known object types
+        for(let x = 0; x < classes.length; x++)
+        {
+            knownObjects.push(classes[x].className);
+        }
         let index = 0;
     }
 
@@ -33,7 +35,7 @@ class Parser
             } 
             this.index ++;
         }
-        for(let x = 0; x < statements.length(); x++)
+        for(let x = 0; x < statements.length; x++)
         {
             if(statements[x].statmentType === 'Variable')
             {
@@ -1837,26 +1839,760 @@ class Parser
             // Error or not covered as of now
         }
     }
-    
-
-
-
-
     /**
      * @param {Statement} statement
      * @returns {int} errorIndex
      */
     ArrayParser(statement)
     {
-
+        const modifiers = ['final', 'static', 'public', 'private', 'protected'];
+        const variableTypes = ['int' , 'double' , 'float' , 'long' , 'String' , 'char' , 'byte', 'boolean', 'short'];
+        const access = ['public', 'private', 'protected'];
+        let i = statment.startIndex;
+        while(i < statment.endIndex)
+        {
+            if(modifiers.indexOf(this.tokens[i].tokenName) !== -1)
+            {
+                if(access.indexOf(this.tokens[i].tokenName) !== -1)
+                { // public
+                    i++;
+                    if(this.tokens[i].tokenName === 'static')
+                    { // public static
+                        i++;
+                        if(this.tokens[i].tokenName === 'final')
+                        { // public static final
+                            i++;
+                            return(ArrayParserSpaceSaver(statement, i));
+                        }
+                        else
+                        { // public static
+                            i++;
+                            return(ArrayParserSpaceSaver(statement, i));
+                        }
+                    }
+                    else if(this.tokens[i].tokenName === 'final')
+                    { // public final
+                        i++;
+                        if(this.tokens[i].tokenName === 'static')
+                        { // public final static
+                            i++;
+                            return(ArrayParserSpaceSaver(statement, i));
+                        }
+                        else
+                        { // public final
+                            i++;
+                            return(ArrayParserSpaceSaver(statement, i));
+                        }
+                    }
+                    else
+                    { // public
+                        i++;
+                        return(ArrayParserSpaceSaver(statement, i));
+                    }
+                }
+                else if(this.tokens[i].tokenName === 'final')
+                { // final
+                    i++;
+                    if(this.tokens[i].tokenName === 'static')
+                    { // final static
+                        i++;
+                        if(access.indexOf(this.tokens[i].tokenName) !== -1)
+                        { // final static public
+                            i++;
+                            return(ArrayParserSpaceSaver(statement, i));
+                        }
+                        else
+                        { // final static
+                            i++;
+                            return(ArrayParserSpaceSaver(statement, i));
+                        }
+                    }
+                    else if(access.indexOf(this.tokens[i].tokenName) !== -1)
+                    { // final public
+                        i++;
+                        if(this.tokens[i].tokenName === 'static')
+                        { // final public static
+                            i++;
+                            return(ArrayParserSpaceSaver(statement, i));
+                        }
+                        else
+                        { // final public
+                            i++;
+                            return(ArrayParserSpaceSaver(statement, i));
+                        }
+                    }
+                    else
+                    { // final
+                        i++;
+                        return(ArrayParserSpaceSaver(statement, i));
+                    }
+                }
+                else if(this.tokens[i].tokenName === 'static')
+                { // static
+                    i++;
+                    if(this.tokens[i].tokenName === 'final')
+                    { // static final
+                        i++;
+                        if(access.indexOf(this.tokens[i].tokenName) !== -1)
+                        { // static final public
+                            i++;
+                            return(ArrayParserSpaceSaver(statement, i));
+                        }
+                        else
+                        { // static final
+                            i++;
+                            return(ArrayParserSpaceSaver(statement, i));
+                        }
+                    }
+                    else if(access.indexOf(this.tokens[i].tokenName) !== -1)
+                    { // static public
+                        i++;
+                        if(this.tokens[i].tokenName === 'final')
+                        { // static public final
+                            i++;
+                            return(ArrayParserSpaceSaver(statement, i));
+                        }
+                        else
+                        { // static public
+                            i++;
+                            return(ArrayParserSpaceSaver(statement, i));
+                        }
+                    }
+                    else
+                    { // static
+                        i++;
+                        return(ArrayParserSpaceSaver(statement, i));
+                    }
+                }
+                else if(this.knownObjects.indexOf(this.tokens[i].tokenName) !== -1 || variableTypes.indexOf(this.tokens[i].tokenName) !== -1)
+                { // int
+                    let arrayType = this.tokens[i].tokenName;
+                    i++;
+                    if(this.tokens[i].tokenName === '[' && this.tokens[i+1].tokenName === ']')
+                    { // int []
+                        let bracketCount = 0;
+                        while(this.tokens[i + 1].tokenName === '[' || this.tokens[i + 1].tokenName === ']')
+                        {
+                            if(this.tokens[i-1].tokenName === '[' && this.tokens[i].tokenName !== ']')
+                            {
+                                return i;
+                            }
+                            bracketCount++;
+                            i++;
+                        }
+                        if(this.tokens[i].tokenType === 'identifier')
+                        { // int [] x
+                            i++;
+                            if(this.tokens[i].tokenName === ';')
+                            { // int [] x;
+                                return -1;
+                            }
+                            else if(this.tokens[i].tokenName === '=')
+                            { // int [] x =
+                                i++;
+                                if(this.tokens[i].tokenName === 'new')
+                                { // int [] x = new
+                                    i++;
+                                    if(this.tokens[i].tokenName === arrayType)
+                                    { // int [] x = new int
+                                        i++
+                                        if(this.tokens[i].tokenName === '[')
+                                        {
+                                            for(let x = 0; x < bracketCount/2; x++)
+                                            {
+                                                if(this.tokens[i].tokenName === '[')
+                                                { // int [] x = new int [
+                                                    i++;
+                                                }
+                                                else
+                                                {
+                                                    return i;
+                                                }
+                                                while(this.tokens[i].tokenName !== ']')
+                                                { // int [] x = new int [10
+                                                    const opperationArray = [];
+                                                    opperationArray.push(this.tokens[i].tokenName);
+                                                    i++;
+                                                }
+                                                if(!opperationCheck(arrayType, opperationArray))
+                                                {
+                                                    return i;
+                                                }
+                                                if(this.tokens[i].tokenName === ']')
+                                                { // int [] x = new int [10]
+                                                    i++;
+                                                }
+                                                else
+                                                {
+                                                    return i;
+                                                }
+                                            }
+                                            if(this.tokens[i].tokenName === ';')
+                                            { // int [] x = new int [10];
+                                                return -1;
+                                            }
+                                        }
+                                        else if(this.tokens[i].tokenName === '{')
+                                        { // int [] x = new int {
+                                            for(let x = 0; x < bracketCount/2; x++)
+                                            {
+                                                if(this.tokens[i].tokenName === '{')
+                                                {
+                                                    i++;
+                                                }
+                                                else
+                                                {
+                                                    return i;
+                                                }
+                                            }
+                                            for(let x = 0; x < bracketCount/2; x++)
+                                            {
+                                                i++;
+                                                while(this.tokens[i].tokenName !== '}')
+                                                {
+                                                    const opperationArray = [];
+                                                    while(this.tokens[i].tokenName !== ',' && this.tokens[i].tokenName !== '}')
+                                                    {
+                                                        opperationArray.push(this.tokens[i].tokenName);
+                                                        i++;
+                                                    }
+                                                    if(this.tokens[i + 1].tokenName === '{')
+                                                    {
+                                                        x--;
+                                                    }
+                                                    if(!opperationCheck(arrayType, opperationArray));
+                                                    {
+                                                        return i;
+                                                    }
+                                                }
+                                            }
+                                        }
+                                        else
+                                        {
+                                            return i;
+                                        }
+                                    }
+                                    else 
+                                    {
+                                        return i;
+                                    }
+                                }
+                                else
+                                {
+                                    return i;
+                                }
+                            }
+                            else
+                            {
+                                return i;
+                            }
+                        }
+                        else
+                        {
+                            return i;
+                        }
+                    }
+                    else if(this.tokens[i].tokenType === 'identifier')
+                    { // int x
+                        if(this.tokens[i].tokenName === '[' && this.tokens[i+1].tokenName === ']')
+                        { // int x []
+                            let bracketCount = 0;
+                            while(this.tokens[i + 1].tokenName === '[' || this.tokens[i + 1].tokenName === ']')
+                            {
+                                if(this.tokens[i-1].tokenName === '[' && this.tokens[i].tokenName !== ']')
+                                {
+                                    return i;
+                                }
+                                bracketCount++;
+                                i++;
+                            }
+                            if(this.tokens[i].tokenName === ';')
+                            { // int x [];
+                                return -1;
+                            }
+                            else if(this.tokens[i].tokenName === '=')
+                            { // int x [] =
+                                i++;
+                                if(this.tokens[i].tokenName === 'new')
+                                { // int x [] = new
+                                    i++;
+                                    if(this.tokens[i].tokenName === arrayType)
+                                    { // int x [] = new int
+                                        i++
+                                        if(this.tokens[i].tokenName === '[')
+                                        {
+                                            for(let x = 0; x < bracketCount/2; x++)
+                                            {
+                                                if(this.tokens[i].tokenName === '[')
+                                                { // int x [] = new int [
+                                                    i++;
+                                                }
+                                                else
+                                                {
+                                                    return i;
+                                                }
+                                                while(this.tokens[i].tokenName !== ']')
+                                                { // int x [] = new int [10
+                                                    const opperationArray = [];
+                                                    opperationArray.push(this.tokens[i].tokenName);
+                                                    i++;
+                                                }
+                                                if(!opperationCheck(arrayType, opperationArray))
+                                                {
+                                                    return i;
+                                                }
+                                                if(this.tokens[i].tokenName === ']')
+                                                { // int x [] = new int [10]
+                                                    i++;
+                                                }
+                                                else
+                                                {
+                                                    return i;
+                                                }
+                                            }
+                                            if(this.tokens[i].tokenName === ';')
+                                            { // int x [] = new int [10];
+                                                return -1;
+                                            }
+                                        }
+                                        else if(this.tokens[i].tokenName === '{')
+                                        { // int x [] = new int {
+                                            for(let x = 0; x < bracketCount/2; x++)
+                                            {
+                                                if(this.tokens[i].tokenName === '{')
+                                                {
+                                                    i++;
+                                                }
+                                                else
+                                                {
+                                                    return i;
+                                                }
+                                            }
+                                            for(let x = 0; x < bracketCount/2; x++)
+                                            {
+                                                i++;
+                                                while(this.tokens[i].tokenName !== '}')
+                                                {
+                                                    const opperationArray = [];
+                                                    while(this.tokens[i].tokenName !== ',' && this.tokens[i].tokenName !== '}')
+                                                    {
+                                                        opperationArray.push(this.tokens[i].tokenName);
+                                                        i++;
+                                                    }
+                                                    if(this.tokens[i + 1].tokenName === '{')
+                                                    {
+                                                        x--;
+                                                    }
+                                                    if(!opperationCheck(arrayType, opperationArray));
+                                                    {
+                                                        return i;
+                                                    }
+                                                }
+                                            }
+                                        }
+                                        else
+                                        {
+                                            return i;
+                                        }
+                                    }
+                                    else 
+                                    {
+                                        return i;
+                                    }
+                                }
+                                else
+                                {
+                                    return i;
+                                }
+                            }
+                            else
+                            {
+                                return i;
+                            }
+                        }
+                        else
+                        {
+                            return i;
+                        }
+                    }
+                    else
+                    {
+                        return i;
+                    }
+                }
+                else
+                {
+                    return i;
+                }
+            }
+        }
     }
+    /**
+     * 
+     * @param {Statement} statement
+     * @param {int} i 
+     * @returns {int} errorIndex 
+     */
+     ArrayParserSpaceSaver(statement, i)
+     {
+         if(this.knownObjects.indexOf(this.tokens[i].tokenName) !== -1 || variableTypes.indexOf(this.tokens[i].tokenName) !== -1)
+         { // int
+             let arrayType = this.tokens[i].tokenName;
+             i++;
+             if(this.tokens[i].tokenName === '[' && this.tokens[i+1].tokenName === ']')
+             { // int []
+                 let bracketCount = 0;
+                 while(this.tokens[i + 1].tokenName === '[' || this.tokens[i + 1].tokenName === ']')
+                 {
+                     if(this.tokens[i-1].tokenName === '[' && this.tokens[i].tokenName !== ']')
+                     {
+                         return i;
+                     }
+                     bracketCount++;
+                     i++;
+                 }
+                 if(this.tokens[i].tokenType === 'identifier')
+                 { // int [] x
+                     i++;
+                     if(this.tokens[i].tokenName === ';')
+                     { // int [] x;
+                         return -1;
+                     }
+                     else if(this.tokens[i].tokenName === '=')
+                     { // int [] x =
+                         i++;
+                         if(this.tokens[i].tokenName === 'new')
+                         { // int [] x = new
+                             i++;
+                             if(this.tokens[i].tokenName === arrayType)
+                             { // int [] x = new int
+                                 i++
+                                 if(this.tokens[i].tokenName === '[')
+                                 {
+                                     for(let x = 0; x < bracketCount/2; x++)
+                                     {
+                                         if(this.tokens[i].tokenName === '[')
+                                         { // int [] x = new int [
+                                             i++;
+                                         }
+                                         else
+                                         {
+                                             return i;
+                                         }
+                                         while(this.tokens[i].tokenName !== ']')
+                                         { // int [] x = new int [10
+                                             const opperationArray = [];
+                                             opperationArray.push(this.tokens[i].tokenName);
+                                             i++;
+                                         }
+                                         if(!opperationCheck(arrayType, opperationArray))
+                                         {
+                                             return i;
+                                         }
+                                         if(this.tokens[i].tokenName === ']')
+                                         { // int [] x = new int [10]
+                                             i++;
+                                         }
+                                         else
+                                         {
+                                             return i;
+                                         }
+                                     }
+                                     if(this.tokens[i].tokenName === ';')
+                                     { // int [] x = new int [10];
+                                         return -1;
+                                     }
+                                 }
+                                 else if(this.tokens[i].tokenName === '{')
+                                 { // int [] x = new int {
+                                     for(let x = 0; x < bracketCount/2; x++)
+                                     {
+                                         if(this.tokens[i].tokenName === '{')
+                                         {
+                                             i++;
+                                         }
+                                         else
+                                         {
+                                             return i;
+                                         }
+                                     }
+                                     for(let x = 0; x < bracketCount/2; x++)
+                                     {
+                                         i++;
+                                         while(this.tokens[i].tokenName !== '}')
+                                         {
+                                             const opperationArray = [];
+                                             while(this.tokens[i].tokenName !== ',' && this.tokens[i].tokenName !== '}')
+                                             {
+                                                 opperationArray.push(this.tokens[i].tokenName);
+                                                 i++;
+                                             }
+                                             if(this.tokens[i + 1].tokenName === '{')
+                                             {
+                                                 x--;
+                                             }
+                                             if(!opperationCheck(arrayType, opperationArray));
+                                             {
+                                                 return i;
+                                             }
+                                         }
+                                     }
+                                 }
+                                 else
+                                 {
+                                     return i;
+                                 }
+                             }
+                             else 
+                             {
+                                 return i;
+                             }
+                         }
+                         else
+                         {
+                             return i;
+                         }
+                     }
+                     else
+                     {
+                         return i;
+                     }
+                 }
+                 else
+                 {
+                     return i;
+                 }
+             }
+             else if(this.tokens[i].tokenType === 'identifier')
+             { // int x
+                 if(this.tokens[i].tokenName === '[' && this.tokens[i+1].tokenName === ']')
+                 { // int x []
+                     let bracketCount = 0;
+                     while(this.tokens[i + 1].tokenName === '[' || this.tokens[i + 1].tokenName === ']')
+                     {
+                         if(this.tokens[i-1].tokenName === '[' && this.tokens[i].tokenName !== ']')
+                         {
+                             return i;
+                         }
+                         bracketCount++;
+                         i++;
+                     }
+                     if(this.tokens[i].tokenName === ';')
+                     { // int x [];
+                         return -1;
+                     }
+                     else if(this.tokens[i].tokenName === '=')
+                     { // int x [] =
+                         i++;
+                         if(this.tokens[i].tokenName === 'new')
+                         { // int x [] = new
+                             i++;
+                             if(this.tokens[i].tokenName === arrayType)
+                             { // int x [] = new int
+                                 i++
+                                 if(this.tokens[i].tokenName === '[')
+                                 {
+                                     for(let x = 0; x < bracketCount/2; x++)
+                                     {
+                                         if(this.tokens[i].tokenName === '[')
+                                         { // int x [] = new int [
+                                             i++;
+                                         }
+                                         else
+                                         {
+                                             return i;
+                                         }
+                                         while(this.tokens[i].tokenName !== ']')
+                                         { // int x [] = new int [10
+                                             const opperationArray = [];
+                                             opperationArray.push(this.tokens[i].tokenName);
+                                             i++;
+                                         }
+                                         if(!opperationCheck(arrayType, opperationArray))
+                                         {
+                                             return i;
+                                         }
+                                         if(this.tokens[i].tokenName === ']')
+                                         { // int x [] = new int [10]
+                                             i++;
+                                         }
+                                         else
+                                         {
+                                             return i;
+                                         }
+                                     }
+                                     if(this.tokens[i].tokenName === ';')
+                                     { // int x [] = new int [10];
+                                         return -1;
+                                     }
+                                 }
+                                 else if(this.tokens[i].tokenName === '{')
+                                 { // int x [] = new int {
+                                     for(let x = 0; x < bracketCount/2; x++)
+                                     {
+                                         if(this.tokens[i].tokenName === '{')
+                                         {
+                                             i++;
+                                         }
+                                         else
+                                         {
+                                             return i;
+                                         }
+                                     }
+                                     for(let x = 0; x < bracketCount/2; x++)
+                                     {
+                                         i++;
+                                         while(this.tokens[i].tokenName !== '}')
+                                         {
+                                             const opperationArray = [];
+                                             while(this.tokens[i].tokenName !== ',' && this.tokens[i].tokenName !== '}')
+                                             {
+                                                 opperationArray.push(this.tokens[i].tokenName);
+                                                 i++;
+                                             }
+                                             if(this.tokens[i + 1].tokenName === '{')
+                                             {
+                                                 x--;
+                                             }
+                                             if(!opperationCheck(arrayType, opperationArray));
+                                             {
+                                                 return i;
+                                             }
+                                         }
+                                     }
+                                 }
+                                 else
+                                 {
+                                     return i;
+                                 }
+                             }
+                             else 
+                             {
+                                 return i;
+                             }
+                         }
+                         else
+                         {
+                             return i;
+                         }
+                     }
+                     else
+                     {
+                         return i;
+                     }
+                 }
+                 else
+                 {
+                     return i;
+                 }
+             }
+             else
+             {
+                 return i;
+             }
+         }
+         else
+         {
+             return i;
+         }
+     }
     /**
      * @param {Statement} statement
      * @returns {int} errorIndex
      */
     ClassParser(statement)
     {
-         
+        const access = ['public', 'private', 'protected'];
+        let i = statment.startIndex; // index of the statement within tokens
+        while(i < statement.endIndex)
+        {
+            if(access.indexOf(this.tokens[i].tokenName) !== -1)
+            { // public
+                i++;
+                if(this.tokens[i].tokenName === 'class' || this.tokens[i].tokenName === 'interface')
+                { // public class
+                    i++;
+                    if(this.tokens[i].tokenType === 'identifier')
+                    { // public class Name
+                        i++;
+                        if(this.tokens[i].tokenName === 'extends')
+                        { // public class Name extends
+                            i++;
+                            if(this.classes.indexOf(this.tokens[i].tokenName) !== -1)
+                            { // public class Name extends Object
+                                return -1;
+                            }
+                            else
+                            { // public class Name extends $
+                                return i;
+                            }
+                        }
+                        else
+                        { //public class Name
+                            if(i === statment.endIndex)
+                            {
+                                return -1;
+                            }
+                            else
+                            { //public class Name $
+                                return i;
+                            }
+                        }
+                    }
+                    else
+                    { // public class $
+                        return i;
+                    }
+                }
+                else
+                { // public $
+                    return i;
+                }
+            }
+            else
+            {
+                if(this.tokens[i].tokenName === 'class' || this.tokens[i].tokenName === 'interface')
+                { // class
+                    i++;
+                    if(this.tokens[i].tokenType === 'identifier')
+                    { // class Name
+                        i++;
+                        if(this.tokens[i].tokenName === 'extends')
+                        { // class Name extends
+                            i++;
+                            if(this.classes.indexOf(this.tokens[i].tokenName) !== -1)
+                            { // class Name extends Object
+                                return -1;
+                            }
+                            else
+                            { // class Name extends $
+                                return i;
+                            }
+                        }
+                        else
+                        { //class Name
+                            if(i === statment.endIndex)
+                            {
+                                return -1;
+                            }
+                            else
+                            { //class Name $
+                                return i;
+                            }
+                        }
+                    }
+                    else
+                    { // class $
+                        return i;
+                    }
+                }
+                else
+                { // $
+                    return i;
+                }
+            }
+            i++;
+        }
     }
     /**
      * @param {Statement} statement
@@ -1864,8 +2600,62 @@ class Parser
      */
     ImportParser(statement)
     {
+        let i = statement.startIndex; // index of the statement within tokens
+        while(i < statement.endIndex)
+        {
+            if(this.tokens[i].tokenName === 'import')
+            { // import
+                i++;
+                for(let x = 0; x < this.classes.length; x++) // Loop through all classes
+                {
+                    if(this.tokens[x].tokenName === this.classes[x].className && this.classes[x].Packages.length === 1) // check to see if the neccessary packages are just the class name which is supposed to be the last index of packages
+                    { // import Object
+                        i++;
+                        if(this.tokens[i].tokenName === ';')
+                        { // import Object;
+                            return -1;
+                        }
+                        else
+                        { // import Object$
+                            return i;
+                        }
+                    }
+                }
+                 // import java
+                i++;
+                for(let w = 0; w < this.classes.length; w++) // Looping through all classes in classes
+                {
+                    let x = i;
+                    for(let v = 0; v < this.classes[w].Packages.length; v++) // Looping through all packages in classes 
+                    {
+                        if(this.tokens[x].tokenName === this.classes[w].Packages[v]) // If the token we are on matches with the package found in packages in classes array
+                        {
+                            x++;
+                            if(this.tokens[x].tokenName === '.')
+                            {
+                                x++;
+                            }
+                            else if(this.tokens[x].tokenName === ';' && v === this.classes[w].Packages.length-1)
+                            {
+                                return -1; // Ending if we find a semicolon ending the statement and we have gone through all the packages of a class
+                            }
+                            else
+                            {
+                                break
+                            }
+                        }
+                        else
+                        {
+                            break;
+                        }
+                    }
+                }
+                return i; // Doesn't work if we couldn't find the packages in the order given
+            }
+        }
         
     }
+    
     /**
      * @param {Statement} statement
      * @returns {int} errorIndex
@@ -1987,7 +2777,7 @@ class Parser
         const seperators = [' ', 'Φ', '(', ')', '{', '}', '[', ']', '.', ';'];
         const opperators = ['=' , '+' , '-' , '/' , '%' , '+=' , '-=' , '/=' , '*=' , '%=' , '==' , '<' , '>' , '<=' , '>=' , '++' , '--'];
         const keywords = ['int' , 'double' , 'float' , 'long' , 'String' , 'char' , 'byte' , 'for' , 'while' , 'if' , 'else' , 'class' , 'final' , 'protected' , 'public' , 'private' , 'static' , 'void' , 'return' , 'switch' , 'case' , 'this' , 'boolean' , 'main' , 'args', 'import', 'extends'];
-        const variableTypes = ['int' , 'double' , 'float' , 'long' , 'String' , 'char' , 'byte', 'boolean']; // Subsection of keywords
+        const variableTypes = ['int' , 'double' , 'float' , 'long' , 'String' , 'char' , 'byte', 'boolean', 'short']; // Subsection of keywords
         const numberVariables = ['int' , 'double' , 'float' , 'long' , 'byte'];
         //Need to figure out how to work on scoping later. Maybe an array of arrays that can append a new one on as a new scope is created?
         const variablesDeclared = []; // This is an array to store all declared variables.
