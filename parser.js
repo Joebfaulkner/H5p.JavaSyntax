@@ -259,7 +259,7 @@ class Parser
                     { // public final static
                         this.index++;
                         // Variable, array, or object declaration
-                        if(knownObjects.indexOf(this.tokens[this.index].tokenName) !== -1)
+                        if(this.knownObjects.indexOf(this.tokens[this.index].tokenName) !== -1)
                         { // public final static Object
                             this.index++;
                             // Object declaration
@@ -336,7 +336,7 @@ class Parser
                     { //public final
                         // Variable, array, or object
                         this.index++;
-                        if(knownObjects.indexOf(this.tokens[this.index].tokenName) !== -1)
+                        if(this.knownObjects.indexOf(this.tokens[this.index].tokenName) !== -1)
                         { // public final Object
                             this.index++;
                             while(this.tokens[this.index].tokenName !== ';')
@@ -415,7 +415,7 @@ class Parser
                     { // public static final
                         // Variable, array, or object
                         this.index++;
-                        if(knownObjects.indexOf(this.tokens[this.index].tokenName) !== -1)
+                        if(this.knownObjects.indexOf(this.tokens[this.index].tokenName) !== -1)
                         { // public static final object
                             // Object declaration
                             this.index++;while(this.tokens[this.index].tokenName !== ';')
@@ -571,7 +571,7 @@ class Parser
                             }
 
                         }
-                        else if(knownObjects.indexOf(this.tokens[this.index].tokenName) !== -1)
+                        else if(this.knownObjects.indexOf(this.tokens[this.index].tokenName) !== -1)
                         { // public static object
                             // Object declaration
                             this.index++;while(this.tokens[this.index].tokenName !== ';')
@@ -618,7 +618,7 @@ class Parser
                         }
                         return(new Statement(startIndex,this.index, 'Class'));
                     }
-                    else if(knownObjects.indexOf(this.tokens[this.index].tokenName))
+                    else if(this.knownObjects.indexOf(this.tokens[this.index].tokenName))
                     { // public Object
                         // Object declaration
                         this.index++;
@@ -717,7 +717,7 @@ class Parser
                         // Can be variable declaration
                         // Can be array declaration
                         this.index++;
-                        if(knownObjects.indexOf(this.tokens[this.index].tokenName))
+                        if(this.knownObjects.indexOf(this.tokens[this.index].tokenName))
                         {   // final public static Object
                             // Object declaration
                             this.index++;
@@ -793,7 +793,7 @@ class Parser
                         // Can be variable declaration
                         // Can be array declaration
                         this.index++;
-                        if(knownObjects.indexOf(this.tokens[this.index].tokenName))
+                        if(this.knownObjects.indexOf(this.tokens[this.index].tokenName))
                         {   // final public Object
                             // Object declaration
                             this.index++;
@@ -874,7 +874,7 @@ class Parser
                         // variable declaration
                         // array declaration
                         this.index++;
-                        if(knownObjects.indexOf(this.tokens[this.index].tokenName))
+                        if(this.knownObjects.indexOf(this.tokens[this.index].tokenName))
                         {   // final static public Object
                             // Object declaration
                             this.index++;
@@ -953,7 +953,7 @@ class Parser
                         // variable declaration
                         // array declaration
                         this.index++;
-                        if(knownObjects.indexOf(this.tokens[this.index].tokenName))
+                        if(this.knownObjects.indexOf(this.tokens[this.index].tokenName))
                         {   // final static Object
                             // Object declaration
                             this.index++;
@@ -1033,7 +1033,7 @@ class Parser
                     // variable declaration
                     // array declaration
                     this.index++;
-                    if(knownObjects.indexOf(this.tokens[this.index].tokenName))
+                    if(this.knownObjects.indexOf(this.tokens[this.index].tokenName))
                     {   // final Object
                         // Object declaration
                         this.index++;
@@ -1119,7 +1119,7 @@ class Parser
                         // variable declaration
                         // array declaration
                         this.index++;
-                        if(knownObjects.indexOf(this.tokens[this.index].tokenName))
+                        if(this.knownObjects.indexOf(this.tokens[this.index].tokenName))
                         {   // static final public Object
                             // Object declaration
                             this.index++;
@@ -1198,7 +1198,7 @@ class Parser
                         // variable declaration
                         // array declaration
                         this.index++;
-                        if(knownObjects.indexOf(this.tokens[this.index].tokenName))
+                        if(this.knownObjects.indexOf(this.tokens[this.index].tokenName))
                         {   // static final Object
                             // Object declaration
                             this.index++;
@@ -1280,7 +1280,7 @@ class Parser
                         // variable declaration
                         // array declaration
                         this.index++;
-                        if(knownObjects.indexOf(this.tokens[this.index].tokenName))
+                        if(this.knownObjects.indexOf(this.tokens[this.index].tokenName))
                         {   // static public final Object
                             // Object declaration
                             this.index++;
@@ -1448,7 +1448,7 @@ class Parser
                             }
 
                         }
-                        else if(knownObjects.indexOf(this.tokens[this.index].tokenName) !== -1)
+                        else if(this.knownObjects.indexOf(this.tokens[this.index].tokenName) !== -1)
                         { // static public object
                             // Object declaration
                             this.index++;
@@ -1550,7 +1550,7 @@ class Parser
                         //Error
                     }
                 }
-                else if(knownObjects.indexOf(this.tokens[this.index].tokenName) !== -1)
+                else if(this.knownObjects.indexOf(this.tokens[this.index].tokenName) !== -1)
                 { // static object
                     // Object declaration
                     this.index++;
@@ -1824,7 +1824,7 @@ class Parser
             }
             return(new Statement(startIndex,this.index, 'Catch'));
         }
-        else if(knownObjects.indexOf(this.tokens[this.index].tokenName) !== -1)
+        else if(this.knownObjects.indexOf(this.tokens[this.index].tokenName) !== -1)
         {
             // We know that this is an object declaration
             this.index++;
