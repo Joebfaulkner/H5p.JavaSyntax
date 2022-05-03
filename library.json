@@ -26,9 +26,6 @@
       "path": "parser.js"
     },
     {
-      "path": "statement.js"
-    },
-    {
       "path": "classes.js"
     }
   ],
