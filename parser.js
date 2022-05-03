@@ -10,31 +10,32 @@ class Parser
     {
         this.tokens = tokens;
         this.classes = classes;
-        const identifiersDeclared = []; // This is an array to store all declared identifiers.
-        const identifiers =[]; // This is also an array to store all declared identifiers but with token objects to store the identifier's type too.
-        const knownObjects = []; // This is an array that contains all known object types
+        this.identifiersDeclared = []; // This is an array to store all declared identifiers.
+        this.identifiers =[]; // This is also an array to store all declared identifiers but with token objects to store the identifier's type too.
+        this.knownObjects = []; // This is an array that contains all known object types
         for(let x = 0; x < classes.length; x++)
         {
             knownObjects.push(classes[x].className);
         }
-        let index = 0;
+        this.index = 0;
     }
 
 
     /**
      * @returns {boolean} works
      */
-    Parse()
+    parse()
     {
         const statements = [];
         while(this.index < this.tokens.length)
         {
-            if( this.tokens[index].tokenType === "keyword" || this.identifiersDeclared.indexOf(this.tokens[index]) !== -1)
+            if( this.tokens[this.index].tokenType === "keyword" || this.identifiersDeclared.indexOf(this.tokens[this.index]) !== -1)
             {
                 statements.push(this.StatementFinder());
             } 
             this.index ++;
         }
+        console.log(statements);
         for(let x = 0; x < statements.length; x++)
         {
             if(statements[x].statmentType === 'Variable')
@@ -2784,24 +2785,24 @@ class Parser
         let index = 0;
         while(index < tokens.length)
         {
-            let tokenHolder = tokens[index]; // A variable to hold the starting token of a statement.
+            let tokenHolder = tokens[this.index]; // A variable to hold the starting token of a statement.
             if(tokenHolder.tokenType === "keyword") // If the current token is a keyword
             {
                 if(variableTypes.indexOf(tokenHolder.tokenName) !== -1) // If it starts with a variable type
                 {
                     index++;
-                    if(!(variablesDeclared.indexOf(tokens[index].tokenName) !== -1)) // If it's not a previously declared identifier
+                    if(!(variablesDeclared.indexOf(tokens[this.index].tokenName) !== -1)) // If it's not a previously declared identifier
                     {
                         index++;
-                        if(tokens[index].tokenName === '=')
+                        if(tokens[this.index].tokenName === '=')
                         {
                             index++;
                             if(numberVariables.indexOf(tokenHolder.tokenName) != -1) // If there is a number type of variable being declared
                             {
-                                if(!isNaN(tokens[index].tokenName))
+                                if(!isNaN(tokens[this.index].tokenName))
                                 {
                                     index++;
-                                    if(tokens[index].tokenName === ";")
+                                    if(tokens[this.index].tokenName === ";")
                                     {
 
                                     }
@@ -2818,10 +2819,10 @@ class Parser
                             }
                             else if(tokenHolder.tokenName = 'String')
                             {
-                                if(tokens[index].tokenName.charAt(0) === '"' && tokens[index].tokenName.charAt(tokens[index].tokenName.length-1) === '"')
+                                if(tokens[this.index].tokenName.charAt(0) === '"' && tokens[this.index].tokenName.charAt(tokens[this.index].tokenName.length-1) === '"')
                                 {
                                     index++;
-                                    if(tokens[index].tokenName === ";")
+                                    if(tokens[this.index].tokenName === ";")
                                     {
 
                                     }
@@ -2838,13 +2839,13 @@ class Parser
                             }
                             else if(tokenHolder.tokenName === 'boolean')
                             {
-                                if(tokens[index].tokenName === 'true' || tokes[index].tokenName === 'false')
+                                if(tokens[this.index].tokenName === 'true' || tokes[this.index].tokenName === 'false')
                                 {
                                     index++;
-                                    if(tokens[index].tokenName === ";")
+                                    if(tokens[this.index].tokenName === ";")
                                     {
                                         index++;
-                                        if(tokens[index].tokenName === ";")
+                                        if(tokens[this.index].tokenName === ";")
                                         {
 
                                         }
@@ -2880,18 +2881,18 @@ class Parser
                     return index;
                 }
             }
-            else if((tokenHolder.tokenType === 'identifier' && !(variablesDeclared.indexOf(tokens[index].tokenType) !== -1))) //If the statement starts with a previously declared identifier
+            else if((tokenHolder.tokenType === 'identifier' && !(variablesDeclared.indexOf(tokens[this.index].tokenType) !== -1))) //If the statement starts with a previously declared identifier
             {
                 index++;
-                 if(tokens[index].tokenName === '=')
+                 if(tokens[this.index].tokenName === '=')
                 {
                     index++;
                     if(numberVariables.indexOf(tokenHolder.tokenName) != -1) // If there is a number type of variable being declared
                     {
-                        if(!isNaN(tokens[index].tokenName))
+                        if(!isNaN(tokens[this.index].tokenName))
                         {
                             index++;
-                            if(tokens[index].tokenName === ";")
+                            if(tokens[this.index].tokenName === ";")
                             {
 
                             }
@@ -2908,10 +2909,10 @@ class Parser
                     }
                     else if(tokenHolder.tokenName = 'String')
                     {
-                        if(tokens[index].tokenName.charAt(0) === '"' && tokens[index].tokenName.charAt(tokens[index].tokenName.length-1) === '"')
+                        if(tokens[this.index].tokenName.charAt(0) === '"' && tokens[this.index].tokenName.charAt(tokens[this.index].tokenName.length-1) === '"')
                         {
                             index++;
-                            if(tokens[index].tokenName === ";")
+                            if(tokens[this.index].tokenName === ";")
                             {
 
                             }
@@ -2928,10 +2929,10 @@ class Parser
                     }
                     else if(tokenHolder.tokenName === 'boolean')
                     {
-                        if(tokens[index].tokenName === 'true' || tokens[index].tokenName === 'false')
+                        if(tokens[this.index].tokenName === 'true' || tokens[this.index].tokenName === 'false')
                         {
                             index++;
-                            if(tokens[index].tokenName === ";")
+                            if(tokens[this.index].tokenName === ";")
                             {
 
                             }
