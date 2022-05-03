@@ -379,11 +379,11 @@ H5P.JavaSyntax = function ($, Question)
   JavaSyntax.prototype.computeScore = function()
   {
     const tokens = Token.tokenization(this.getInput("Φ"));
-    const classes = [];
+    //const classes = [];
+    //classes.push(new Class('Object',false, [],[]));
     console.log(tokens);
     console.log(this.getInput("Φ"));
     console.log("BREAK!");
-    console.log("AAAAAAAAAAAAAAAAAAAAAA");
     let parser = new Parser(tokens, classes);
     parser.parse();
     if(this.getInput().length > 0)

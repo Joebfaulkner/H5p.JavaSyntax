@@ -15,9 +15,10 @@ class Parser
         this.knownObjects = []; // This is an array that contains all known object types
         for(let x = 0; x < classes.length; x++)
         {
-            knownObjects.push(classes[x].className);
+            this.knownObjects.push(classes[x].className);
         }
         this.index = 0;
+        console.log(this.knownObjects);
     }
 
 
@@ -493,7 +494,6 @@ class Parser
                         // Can be an array declaratoin
                         // Can be variable declaration
                         // Can be object declaration
-                        this.index++;
                         if(this.tokens[this.index].tokenName === 'void')
                         { // public static void
                             this.index++;
@@ -1201,6 +1201,7 @@ class Parser
                         if(this.knownObjects.indexOf(this.tokens[this.index].tokenName))
                         {   // static final Object
                             // Object declaration
+                            console.log("hit");
                             this.index++;
                             while(this.tokens[this.index].tokenName !== ';')
                             {
@@ -2286,7 +2287,7 @@ class Parser
                                              opperationArray.push(this.tokens[i].tokenName);
                                              i++;
                                          }
-                                         if(!opperationCheck(arrayType, opperationArray))
+                                         if(!opperationCheck('int', opperationArray))
                                          {
                                              return i;
                                          }

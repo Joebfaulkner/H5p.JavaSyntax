@@ -1,4 +1,4 @@
-class classes
+class Class
 {
     /**
      * @constructor
@@ -7,8 +7,16 @@ class classes
      * @param {Array} Methods
      * @param {Array} Packages // The last index of Packages should be the class name for the import "sub-parser"'s simplicity
      */
+    constructor(className, needImport, Methods, Packages)
+    {
+        this.className = className;
+        this.needImport = needImport;
+        this.Methods = Methods;
+        this.Packages = Packages;
+
+    }
 }
-class Methods
+class Method
 {
     /**
      * @constructor
@@ -23,7 +31,7 @@ class Methods
         this.isStatic = isStatic;
     }
 }
-class parameters
+class Parameter
 {
     /**
      * @constructor
