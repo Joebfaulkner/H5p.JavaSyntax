@@ -18,7 +18,6 @@ class Parser
             this.knownObjects.push(classes[x].className);
         }
         this.index = 0;
-        console.log(this.knownObjects);
     }
 
 
@@ -30,7 +29,7 @@ class Parser
         const statements = [];
         while(this.index < this.tokens.length)
         {
-            if( this.tokens[this.index].tokenType === "keyword" || this.identifiersDeclared.indexOf(this.tokens[this.index]) !== -1)
+            if( this.tokens[this.index].tokenType === "keyword" || this.identifiersDeclared.indexOf(this.tokens[this.index].tokenName) !== -1)
             {
                 statements.push(this.StatementFinder());
             } 
@@ -39,7 +38,7 @@ class Parser
         console.log(statements);
         for(let x = 0; x < statements.length; x++)
         {
-            if(statements[x].statmentType === 'Variable')
+            if(statements[x].statementType === 'Variable')
             {
                 if(this.VariableParser(statements[x]) !== -1)
                 {
@@ -50,7 +49,7 @@ class Parser
                     return false;
                 }
             }
-            else if(statements[x].statmentType === 'Array')
+            else if(statements[x].statementType === 'Array')
             {
                 if(this.ArrayParser(statements[x]) !== -1)
                 {
@@ -61,7 +60,7 @@ class Parser
                     return false;
                 }
             }
-            else if(statements[x].statmentType === 'Class')
+            else if(statements[x].statementType === 'Class')
             {
                 if(this.ClassParser(statements[x]) !== -1)
                 {
@@ -83,7 +82,7 @@ class Parser
                     return false;
                 }
             }
-            else if(statements[x].statmentType === 'Method')
+            else if(statements[x].statementType === 'Method')
             {
                 if(this.MethodParser(statements[x]) !== -1)
                 {
@@ -105,7 +104,7 @@ class Parser
                     return false;
                 }
             }
-            else if(statements[x].statmentType === 'Assignment')
+            else if(statements[x].statementType === 'Assignment')
             {
                 if(this.AssignmentParser(statements[x]) !== -1)
                 {
@@ -336,7 +335,6 @@ class Parser
                     else
                     { //public final
                         // Variable, array, or object
-                        this.index++;
                         if(this.knownObjects.indexOf(this.tokens[this.index].tokenName) !== -1)
                         { // public final Object
                             this.index++;
@@ -594,7 +592,6 @@ class Parser
                     // Can be class header
                     // Can be an array declaratoin
                     // Can be object declaration
-                    this.index++;
                     if(this.tokens[this.index].tokenName === 'void')
                     { // public void
                         // Method Header
@@ -618,7 +615,7 @@ class Parser
                         }
                         return(new Statement(startIndex,this.index, 'Class'));
                     }
-                    else if(this.knownObjects.indexOf(this.tokens[this.index].tokenName))
+                    else if(this.knownObjects.indexOf(this.tokens[this.index].tokenName) !== -1)
                     { // public Object
                         // Object declaration
                         this.index++;
@@ -717,7 +714,7 @@ class Parser
                         // Can be variable declaration
                         // Can be array declaration
                         this.index++;
-                        if(this.knownObjects.indexOf(this.tokens[this.index].tokenName))
+                        if(this.knownObjects.indexOf(this.tokens[this.index].tokenName) !== -1)
                         {   // final public static Object
                             // Object declaration
                             this.index++;
@@ -728,7 +725,7 @@ class Parser
                             }
                             return(new Statement(startIndex,this.index, 'Object'));
                         }
-                        else if(variableTypes.indexOf(this.tokens[this.index]) !== -1)
+                        else if(variableTypes.indexOf(this.tokens[this.index].tokenName) !== -1)
                         {   //final public static int
                             // Can be variable declaration
                             // Can be array declaration
@@ -792,8 +789,7 @@ class Parser
                         // Can be object declaration
                         // Can be variable declaration
                         // Can be array declaration
-                        this.index++;
-                        if(this.knownObjects.indexOf(this.tokens[this.index].tokenName))
+                        if(this.knownObjects.indexOf(this.tokens[this.index].tokenName) !== -1)
                         {   // final public Object
                             // Object declaration
                             this.index++;
@@ -804,7 +800,7 @@ class Parser
                             }
                             return(new Statement(startIndex,this.index, 'Object'));
                         }
-                        else if(variableTypes.indexOf(this.tokens[this.index]) !== -1)
+                        else if(variableTypes.indexOf(this.tokens[this.index].tokenName) !== -1)
                         {   //final public int
                             // Can be variable declaration
                             // Can be array declaration
@@ -874,8 +870,8 @@ class Parser
                         // variable declaration
                         // array declaration
                         this.index++;
-                        if(this.knownObjects.indexOf(this.tokens[this.index].tokenName))
-                        {   // final static public Object
+                        if(this.knownObjects.indexOf(this.tokens[this.index].tokenName) !== -1)
+                        {   // final satic public Object
                             // Object declaration
                             this.index++;
                             while(this.tokens[this.index].tokenName !== ';')
@@ -885,7 +881,7 @@ class Parser
                             }
                             return(new Statement(startIndex,this.index, 'Object'));
                             }
-                        else if(variableTypes.indexOf(this.tokens[this.index]) !== -1)
+                        else if(variableTypes.indexOf(this.tokens[this.index].tokenName) !== -1)
                         {   //final static public int
                             // Can be variable declaration
                             // Can be array declaration
@@ -952,8 +948,7 @@ class Parser
                         // Object declaration
                         // variable declaration
                         // array declaration
-                        this.index++;
-                        if(this.knownObjects.indexOf(this.tokens[this.index].tokenName))
+                        if(this.knownObjects.indexOf(this.tokens[this.index].tokenName) !== -1)
                         {   // final static Object
                             // Object declaration
                             this.index++;
@@ -964,7 +959,7 @@ class Parser
                             }
                             return(new Statement(startIndex,this.index, 'Object'));
                         }
-                        else if(variableTypes.indexOf(this.tokens[this.index]) !== -1)
+                        else if(variableTypes.indexOf(this.tokens[this.index].tokenName) !== -1)
                         {   //final static int
                             // Can be variable declaration
                             // Can be array declaration
@@ -1032,8 +1027,7 @@ class Parser
                     // Object declaration
                     // variable declaration
                     // array declaration
-                    this.index++;
-                    if(this.knownObjects.indexOf(this.tokens[this.index].tokenName))
+                    if(this.knownObjects.indexOf(this.tokens[this.index].tokenName) !== -1)
                     {   // final Object
                         // Object declaration
                         this.index++;
@@ -1044,7 +1038,7 @@ class Parser
                         }
                         return(new Statement(startIndex,this.index, 'Object'));
                     }
-                    else if(variableTypes.indexOf(this.tokens[this.index]) !== -1)
+                    else if(variableTypes.indexOf(this.tokens[this.index].tokenName) !== -1)
                     {   //final int
                         // Can be variable declaration
                         // Can be array declaration
@@ -1118,8 +1112,9 @@ class Parser
                         // Object declaration
                         // variable declaration
                         // array declaration
+                        console.log("hit")
                         this.index++;
-                        if(this.knownObjects.indexOf(this.tokens[this.index].tokenName))
+                        if(this.knownObjects.indexOf(this.tokens[this.index].tokenName) !== -1)
                         {   // static final public Object
                             // Object declaration
                             this.index++;
@@ -1130,7 +1125,7 @@ class Parser
                             }
                             return(new Statement(startIndex,this.index, 'Object'));
                         }
-                        else if(variableTypes.indexOf(this.tokens[this.index]) !== -1)
+                        else if(variableTypes.indexOf(this.tokens[this.index].tokenName) !== -1)
                         {   //static final public int
                             // Can be variable declaration
                             // Can be array declaration
@@ -1197,8 +1192,7 @@ class Parser
                         // Object declaration
                         // variable declaration
                         // array declaration
-                        this.index++;
-                        if(this.knownObjects.indexOf(this.tokens[this.index].tokenName))
+                        if(this.knownObjects.indexOf(this.tokens[this.index].tokenName) !== -1)
                         {   // static final Object
                             // Object declaration
                             console.log("hit");
@@ -1210,7 +1204,7 @@ class Parser
                             }
                             return(new Statement(startIndex,this.index, 'Object'));
                         }
-                        else if(variableTypes.indexOf(this.tokens[this.index]) !== -1)
+                        else if(variableTypes.indexOf(this.tokens[this.index].tokenName) !== -1)
                         {   //static final int
                             // Can be variable declaration
                             // Can be array declaration
@@ -1281,7 +1275,7 @@ class Parser
                         // variable declaration
                         // array declaration
                         this.index++;
-                        if(this.knownObjects.indexOf(this.tokens[this.index].tokenName))
+                        if(this.knownObjects.indexOf(this.tokens[this.index].tokenName) !== -1)
                         {   // static public final Object
                             // Object declaration
                             this.index++;
@@ -1292,7 +1286,7 @@ class Parser
                             }
                             return(new Statement(startIndex,this.index, 'Object'));
                         }
-                        else if(variableTypes.indexOf(this.tokens[this.index]) !== -1)
+                        else if(variableTypes.indexOf(this.tokens[this.index].tokenName) !== -1)
                         {   //static public final int
                             // Can be variable declaration
                             // Can be array declaration
@@ -1360,7 +1354,6 @@ class Parser
                         // Can be an array declaratoin
                         // Can be variable declaration
                         // Can be object declaration
-                        this.index++;
                         if(this.tokens[this.index].tokenName === 'void')
                         { // static public void
                             // Method Header
@@ -1472,7 +1465,6 @@ class Parser
                 // Can be an array declaratoin
                 // Can be variable declaration
                 // Can be object declaration
-                this.index++;
                 if(this.tokens[this.index].tokenName === 'void')
                 { // static void
                     // Method Header
@@ -1671,7 +1663,7 @@ class Parser
         }
         else if(this.tokens[this.index].tokenName === "import")
         {
-            // We know this is an import statment
+            // We know this is an import statement
             this.index ++;
             while(this.tokens[this.index].tokenName !== ';')
             {
@@ -1740,7 +1732,7 @@ class Parser
             while(this.tokens[this.index + 1].tokenName !== '{')
             {
                 this.index++;
-                // switch statments end right before open braces:   switch(5)
+                // switch statements end right before open braces:   switch(5)
             }
             return(new Statement(startIndex,this.index, 'Switch'));
         }
@@ -1850,8 +1842,8 @@ class Parser
         const modifiers = ['final', 'static', 'public', 'private', 'protected'];
         const variableTypes = ['int' , 'double' , 'float' , 'long' , 'String' , 'char' , 'byte', 'boolean', 'short'];
         const access = ['public', 'private', 'protected'];
-        let i = statment.startIndex;
-        while(i < statment.endIndex)
+        let i = statement.startIndex;
+        while(i < statement.endIndex)
         {
             if(modifiers.indexOf(this.tokens[i].tokenName) !== -1)
             {
@@ -2505,7 +2497,7 @@ class Parser
     ClassParser(statement)
     {
         const access = ['public', 'private', 'protected'];
-        let i = statment.startIndex; // index of the statement within tokens
+        let i = statement.startIndex; // index of the statement within tokens
         while(i < statement.endIndex)
         {
             if(access.indexOf(this.tokens[i].tokenName) !== -1)
@@ -2531,7 +2523,7 @@ class Parser
                         }
                         else
                         { //public class Name
-                            if(i === statment.endIndex)
+                            if(i === statement.endIndex)
                             {
                                 return -1;
                             }
@@ -2573,7 +2565,7 @@ class Parser
                         }
                         else
                         { //class Name
-                            if(i === statment.endIndex)
+                            if(i === statement.endIndex)
                             {
                                 return -1;
                             }
